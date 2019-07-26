@@ -14,9 +14,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "OneRpcClient\\": "src",
-      "OneRpcClient\\App\\Tests\\Rpc\\": "src/services/SuperAdmin.php"
-    }
+      "OneRpcClient\\": "src"
+    },
+    "classmap": [
+      "src/services"
+    ]
   },
   "require": {
     "php": ">=7.1",
