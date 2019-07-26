@@ -1,0 +1,25 @@
+{
+  "name": "ricebna/one-rpc-client",
+  "description": "One Framework rpc client",
+  "keywords": [
+    "OneFrameword",
+    "rpc",
+    "swoole"
+  ],
+  "authors": [
+    {
+      "name": "ricebna",
+      "email": "ricebna@yahoo.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "OneRpcClient\\": "src",
+      "OneRpcClient\\App\\Tests\\Rpc\\": "src/services/SuperAdmin.php"
+    }
+  },
+  "require": {
+    "php": ">=7.1",
+    "ext-swoole": ">=4.2.9"
+  }
+}
