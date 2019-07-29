@@ -1,33 +1,35 @@
 <?php
 namespace OneRpcClient{
-    class RpcClientTcp
+    class RpcClient
     {
         const RPC_REMOTE_OBJ = '#RpcRemoteObj#';
 
-        private $_need_close = 0;
+        public static $is_static = 0;
 
-        private static $_connection = null;
+        public static $call_id = '';
 
-        private static $_is_static = 0;
+        protected $need_close = 0;
 
-        protected $_rpc_server = '';
+        protected $remote_class_name = '';
 
-        protected $_remote_class_name = '';
-
-        protected $_token = '';
-
-        protected $_time_out = 1;
-
-        public static $_call_id = '';
+        protected $token = '';
 
         public $consul_host = 'consul-client';
         public $consul_port = '8520';
+        
+        protected $service_name = '';
 
         public function __construct(...$args)
         {
-            $this->id    = self::$_call_id ? self::$_call_id : $this->uuid();
+            $this->id    = self::$call_id ? self::$call_id : $this->uuid();
             $this->calss = $this->_remote_class_name ? $this->_remote_class_name : get_called_class();
             $this->args  = $args;
+        }
+
+        protected function getServer(){
+            if(!$this->consul_service_name){
+                throw new \Exception("The service name is not set");
+            }
             $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
             $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
             $param = ["passing" => true];
@@ -39,26 +41,23 @@ namespace OneRpcClient{
                 throw new \Exception("The service $service_name is unavailable");
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
-            $this->_rpc_server = "tcp://{$service['Address']}:{$service['Port']}";
-            if (self::$_connection === null) {
-                self::$_connection = $this->connect();
-            }
+            return "{$service['Address']}:{$service['Port']}";
         }
 
         public function __call($name, $arguments)
         {
             return $this->_callRpc([
-                'i' => $this->id, 
-                'c' => $this->calss, 
+                'i' => $this->id,
+                'c' => $this->calss,
                 'f' => $name,
                 'a' => $arguments,
                 't' => $this->args,
-                's' => self::$_is_static,
+                's' => self::$is_static,
                 'o' => $this->_token,
             ]);
         }
 
-        private function uuid()
+        protected function uuid()
         {
             $str = uniqid('', true);
             $arr = explode('.', $str);
@@ -72,13 +71,39 @@ namespace OneRpcClient{
             return $str;
         }
 
-        private function _callRpc($data, $retry = false)
+        public static function __callStatic($name, $arguments)
         {
-            self::$_is_static = 0;
+            self::$is_static = 1;
+            return (new static)->{$name}(...$arguments);
+        }
+
+    }
+
+    class RpcClientTcp extends RpcClient
+    {
+
+        protected $connection = null;
+
+        protected $time_out = 1;
+
+        protected function getConnection(){
+            if (!$this->connection) {
+                $this->connection = stream_socket_client('tcp://'.$this->getServer(), $code, $msg, 3);
+                if (!$this->connection) {
+                    throw new \Exception($msg,3);
+                }
+                stream_set_timeout($this->connection, $this->_time_out);
+            }
+            return $this->connection;
+        }
+
+        protected function _callRpc($data, $retry = false)
+        {
+            self::$is_static = 0;
 
             $buffer = msgpack_pack($data);
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
-            $len    = fwrite(self::$_connection, $buffer);
+            $len    = fwrite($this->getConnection(), $buffer);
         
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
@@ -94,13 +119,13 @@ namespace OneRpcClient{
             }
         }
 
-        private function read()
+        protected function read()
         {
             $all_buffer = '';
             $total_len  = 4;
             $head_read  = false;
             while (1) {
-                $buffer = fread(self::$_connection, 8192);
+                $buffer = fread($this->getConnection(), 8192);
                 if ($buffer === '' || $buffer === false) {
                     throw new \Exception('read from remote fail', 2);
                 }
@@ -121,22 +146,32 @@ namespace OneRpcClient{
             return substr($all_buffer, 4);
         }
 
-        private function connect()
+    }
+
+    class RpcClientHttp extends RpcClient
+    {
+        protected function _callRpc($data)
         {
-            $connection = stream_socket_client($this->_rpc_server, $code, $msg, 3);
-            if (!$connection) {
-                throw new \Exception($msg,3);
+            self::$is_static = 0;
+
+            $opts = ['http' => [
+                'method'  => 'POST',
+                'header'  => 'Content-type: application/rpc',
+                'timeout' => 3,
+                'content' => msgpack_pack($data)
+            ]];
+            $context = stream_context_create($opts);
+            $result  = file_get_contents('http://'.$this->getServer(), false, $context);
+            $data    = msgpack_unpack($result);
+            if ($data === self::RPC_REMOTE_OBJ) {
+                $this->_need_close = 1;
+                return $this;
+            } else if (is_array($data) && isset($data['err'], $data['msg'])) {
+                throw new \Exception($data['msg'], $data['err']);
+            } else {
+                return $data;
             }
-            stream_set_timeout($connection, $this->_time_out);
-            return $connection;
-
         }
-
-        public static function __callStatic($name, $arguments)
-        {
-            self::$_is_static = 1;
-            return (new static)->{$name}(...$arguments);
-        }
-
+        
     }
 }
