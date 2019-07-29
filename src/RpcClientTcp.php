@@ -20,11 +20,26 @@ namespace OneRpcClient{
 
         public static $_call_id = '';
 
+        public $consul_host = 'consul-client';
+        public $consul_port = '8520';
+
         public function __construct(...$args)
         {
             $this->id    = self::$_call_id ? self::$_call_id : $this->uuid();
             $this->calss = $this->_remote_class_name ? $this->_remote_class_name : get_called_class();
             $this->args  = $args;
+            $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
+            $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
+            $param = ["passing" => true];
+            if($tag){
+                $param['tag'] = $tag;
+            }
+            $result = $helth->service($service_name,$param)->json();
+            if(!$result){
+                throw new \Exception("The service $service_name is unavailable");
+            }
+            $service = $result[mt_rand(0, count($result) - 1)]["Service"];
+            $this->_rpc_server = "tcp://{$service['Address']}:{$service['Port']}";
             if (self::$_connection === null) {
                 self::$_connection = $this->connect();
             }
@@ -57,13 +72,14 @@ namespace OneRpcClient{
             return $str;
         }
 
-        private function _callRpc($data)
+        private function _callRpc($data, $retry = false)
         {
             self::$_is_static = 0;
 
             $buffer = msgpack_pack($data);
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
             $len    = fwrite(self::$_connection, $buffer);
+        
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
             }
