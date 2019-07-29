@@ -28,7 +28,7 @@ namespace OneRpcClient{
 
         protected function getServer(){
             if(!$this->service_name){
-                throw new \Exception("The service name is not set");
+                throw new \Exception('The property $service_name is not set');
             }
             $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
             $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
