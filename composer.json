@@ -23,6 +23,6 @@
   "require": {
     "php": ">=7.1",
     "ext-swoole": ">=4.2.9",
-    "sensiolabs/consul-php-sdk": "~1.0"
+    "sensiolabs/consul-php-sdk": "*"
   }
 }
