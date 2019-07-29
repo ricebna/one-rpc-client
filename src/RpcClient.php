@@ -26,7 +26,7 @@ namespace OneRpcClient{
             $this->args  = $args;
         }
 
-        protected function getServer(){
+        protected function getServer($tag = 'rpc_http'){
             if(!$this->service_name){
                 throw new \Exception('The property $service_name is not set');
             }
@@ -36,9 +36,9 @@ namespace OneRpcClient{
             if($tag){
                 $param['tag'] = $tag;
             }
-            $result = $helth->service($service_name,$param)->json();
+            $result = $helth->service($this->service_name,$param)->json();
             if(!$result){
-                throw new \Exception("The service $service_name is unavailable");
+                throw new \Exception("The service $this->service_name is unavailable");
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
             return "{$service['Address']}:{$service['Port']}";
