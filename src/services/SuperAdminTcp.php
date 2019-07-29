@@ -2,7 +2,7 @@
 
 /***************************************************************************************************/
 
-namespace OneRpcClient\Http\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
 
@@ -15,7 +15,7 @@ namespace OneRpcClient\Http\App\Rpc {
     * @method int insert(int $age,string $name)
 
     */
-    class AbcRpc extends \OneRpcClient\RpcClientHttp { 
+    class AbcRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'super-admin';
         protected $_remote_class_name = 'App\Rpc\AbcRpc';
     } 
@@ -23,7 +23,7 @@ namespace OneRpcClient\Http\App\Rpc {
 
 /***************************************************************************************************/
 
-namespace OneRpcClient\Http\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
 
@@ -36,7 +36,7 @@ namespace OneRpcClient\Http\App\Rpc {
     * @method int insert(int $age,string $name)
 
     */
-    class HelloRpc extends \OneRpcClient\RpcClientHttp { 
+    class HelloRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'super-admin';
         protected $_remote_class_name = 'App\Rpc\HelloRpc';
     } 
