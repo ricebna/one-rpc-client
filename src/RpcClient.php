@@ -14,8 +14,8 @@ namespace OneRpcClient{
 
         protected $token = '';
 
-        public $consul_host = 'consul.client';
-        public $consul_port = '8520';
+        protected $consul_host = 'consul.client';
+        protected $consul_port = '8520';
         
         protected $service_name = '';
 
@@ -26,7 +26,12 @@ namespace OneRpcClient{
             $this->args  = $args;
         }
 
-        protected function getServer($tag = 'rpc_http'){
+        public function setServerHost($host, $port){
+            $this->consul_host = $host;
+            $this->consul_port = $port;
+        }
+
+        protected function getServer($tag = 'rpc_tcp'){
             if(!$this->service_name){
                 throw new \Exception('The property $service_name is not set');
             }
@@ -88,7 +93,7 @@ namespace OneRpcClient{
 
         protected function getConnection(){
             if (!$this->connection) {
-                $this->connection = stream_socket_client('tcp://'.$this->getServer('rpc_tcp'), $code, $msg, 3);
+                $this->connection = stream_socket_client('tcp://'.$this->getServer(), $code, $msg, 3);
                 if (!$this->connection) {
                     throw new \Exception($msg,3);
                 }
@@ -161,7 +166,7 @@ namespace OneRpcClient{
                 'content' => msgpack_pack($data)
             ]];
             $context = stream_context_create($opts);
-            $result  = file_get_contents('http://'.$this->getServer(), false, $context);
+            $result  = file_get_contents('http://'.$this->getServer('rpc_http'), false, $context);
             $data    = msgpack_unpack($result);
             if ($data === self::RPC_REMOTE_OBJ) {
                 $this->_need_close = 1;
