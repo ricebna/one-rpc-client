@@ -22,7 +22,7 @@ namespace OneRpcClient{
         public function __construct(...$args)
         {
             $this->id    = self::$call_id ? self::$call_id : $this->uuid();
-            $this->calss = $this->_remote_class_name ? $this->_remote_class_name : get_called_class();
+            $this->calss = $this->remote_class_name ? $this->remote_class_name : get_called_class();
             $this->args  = $args;
         }
 
@@ -51,14 +51,14 @@ namespace OneRpcClient{
 
         public function __call($name, $arguments)
         {
-            return $this->_callRpc([
+            return $this->callRpc([
                 'i' => $this->id,
                 'c' => $this->calss,
                 'f' => $name,
                 'a' => $arguments,
                 't' => $this->args,
                 's' => self::$is_static,
-                'o' => $this->_token,
+                'o' => $this->token,
             ]);
         }
 
@@ -97,12 +97,12 @@ namespace OneRpcClient{
                 if (!$this->connection) {
                     throw new \Exception($msg,3);
                 }
-                stream_set_timeout($this->connection, $this->_time_out);
+                stream_set_timeout($this->connection, $this->time_out);
             }
             return $this->connection;
         }
 
-        protected function _callRpc($data, $retry = false)
+        protected function callRpc($data, $retry = false)
         {
             self::$is_static = 0;
 
@@ -115,7 +115,7 @@ namespace OneRpcClient{
             }
             $data = msgpack_unpack($this->read());
             if ($data === self::RPC_REMOTE_OBJ) {
-                $this->_need_close = 1;
+                $this->need_close = 1;
                 return $this;
             } else if (is_array($data) && isset($data['err'], $data['msg'])) {
                 throw new \Exception($data['msg'], $data['err']);
@@ -169,7 +169,7 @@ namespace OneRpcClient{
             $result  = file_get_contents('http://'.$this->getServer('rpc_http'), false, $context);
             $data    = msgpack_unpack($result);
             if ($data === self::RPC_REMOTE_OBJ) {
-                $this->_need_close = 1;
+                $this->need_close = 1;
                 return $this;
             } else if (is_array($data) && isset($data['err'], $data['msg'])) {
                 throw new \Exception($data['msg'], $data['err']);
