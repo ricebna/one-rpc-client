@@ -41,7 +41,17 @@ namespace OneRpcClient{
             $param['tag'] = "rpc_$type";
             $result = $helth->service($this->service_name,$param)->json();
             if(!$result){
-                throw new \Exception("The service $this->service_name is unavailable");
+                $i = 10;
+                while($i--){
+                    $result = $helth->service($this->service_name,$param)->json();
+                    if($result){
+                        break;
+                    }
+                    if(!$i){
+                        throw new \Exception("The service $this->service_name is unavailable");
+                    }
+                    sleep(1);
+                }
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
             return "$type://{$service['Address']}:{$service['Port']}";
