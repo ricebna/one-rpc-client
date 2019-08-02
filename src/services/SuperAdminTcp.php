@@ -34,8 +34,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
      * 获得角色列表组, 包括所有系统
-     * @return mixed
-    * @method mixed roleGroup()
+     * @return array
+    * @method array roleGroup()
 
     */
     class AdminRpc extends \OneRpcClient\RpcClientTcp { 
