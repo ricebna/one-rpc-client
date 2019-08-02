@@ -1,5 +1,5 @@
 <?php
-namespace OneRpcClient{//
+namespace OneRpcClient{
     class RpcClient
     {
         const RPC_REMOTE_OBJ = '#RpcRemoteObj#';
