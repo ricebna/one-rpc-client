@@ -25,8 +25,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $sysid,系统标识符(haifang:海房,insurance:保险,operate:运营)
      * @param $username,用户名
      * @param $pass,密码
-     * @return string 本地系统用户名
-    * @method string verify(string $sysid,string $username,string $pass)
+     * @return array
+     * 成功返回: ["code" => "ok", "data" => ["username" => "chen6"]]
+     * 失败返回: ["code" => "错误码", "data" => []]
+     * 错误码: ok:成功, pass-error:密码错误, disabled:账号已禁用, user-nx:账号不存在
+    * @method array verify(string $sysid,string $username,string $pass)
 
 ------------------------------------------------------------------------------
 
