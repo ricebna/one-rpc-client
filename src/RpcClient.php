@@ -16,7 +16,7 @@ namespace OneRpcClient{
 
         protected $consul_host = 'consul.client';
         protected $consul_port = '8520';
-        
+
         protected $service_name = '';
 
         public function __construct(...$args)
@@ -31,22 +31,20 @@ namespace OneRpcClient{
             $this->consul_port = $port;
         }
 
-        protected function getServer($tag = 'rpc_tcp'){
+        protected function getServer($type = 'tcp'){
             if(!$this->service_name){
                 throw new \Exception('The property $service_name is not set');
             }
             $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
             $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
             $param = ["passing" => true];
-            if($tag){
-                $param['tag'] = $tag;
-            }
+            $param['tag'] = "rpc_$type";
             $result = $helth->service($this->service_name,$param)->json();
             if(!$result){
                 throw new \Exception("The service $this->service_name is unavailable");
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
-            return "{$service['Address']}:{$service['Port']}";
+            return "$type://{$service['Address']}:{$service['Port']}";
         }
 
         public function __call($name, $arguments)
@@ -89,27 +87,30 @@ namespace OneRpcClient{
 
         protected $connection = null;
 
-        protected $time_out = 1;
+        protected $time_out = 30;
 
         protected function getConnection(){
             if (!$this->connection) {
-                $this->connection = stream_socket_client('tcp://'.$this->getServer(), $code, $msg, 3);
+                $this->connection = stream_socket_client($this->getServer(), $code, $msg, 3);
                 if (!$this->connection) {
-                    throw new \Exception($msg,3);
+                    $this->connection = stream_socket_client($this->getServer(), $code, $msg, 6);
+                    if (!$this->connection) {
+                        throw new \Exception($msg, 6);
+                    }
                 }
                 stream_set_timeout($this->connection, $this->time_out);
             }
             return $this->connection;
         }
 
-        protected function callRpc($data, $retry = false)
+        protected function callRpc($data)
         {
             self::$is_static = 0;
 
             $buffer = msgpack_pack($data);
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
             $len    = fwrite($this->getConnection(), $buffer);
-        
+
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
             }
@@ -118,6 +119,7 @@ namespace OneRpcClient{
                 $this->need_close = 1;
                 return $this;
             } else if (is_array($data) && isset($data['err'], $data['msg'])) {
+                dump($data);
                 throw new \Exception($data['msg'], $data['err']);
             } else {
                 return $data;
@@ -129,6 +131,7 @@ namespace OneRpcClient{
             $all_buffer = '';
             $total_len  = 4;
             $head_read  = false;
+            $time = time();
             while (1) {
                 $buffer = fread($this->getConnection(), 8192);
                 if ($buffer === '' || $buffer === false) {
@@ -162,11 +165,11 @@ namespace OneRpcClient{
             $opts = ['http' => [
                 'method'  => 'POST',
                 'header'  => 'Content-type: application/rpc',
-                'timeout' => 3,
+                'timeout' => 30,
                 'content' => msgpack_pack($data)
             ]];
             $context = stream_context_create($opts);
-            $result  = file_get_contents('http://'.$this->getServer('rpc_http'), false, $context);
+            $result  = file_get_contents($this->getServer('http'), false, $context);
             $data    = msgpack_unpack($result);
             if ($data === self::RPC_REMOTE_OBJ) {
                 $this->need_close = 1;
@@ -177,6 +180,6 @@ namespace OneRpcClient{
                 return $data;
             }
         }
-        
+
     }
 }

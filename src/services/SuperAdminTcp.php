@@ -34,9 +34,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @throws \Exception
     * @method mixed roleList(string $sysid)
 
+---------------------------------------------------------------
+     * 获得角色列表组, 包括所有系统
+     * @return mixed
+     * @throws \Exception
+    * @method mixed roleGroup()
+
     */
     class AdminRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'super-admin';
-        protected $_remote_class_name = 'App\Rpc\AdminRpc';
+        protected $remote_class_name = 'App\Rpc\AdminRpc';
     } 
-}
+} 
