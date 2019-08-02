@@ -11,12 +11,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 同步创建各系统用户信息
      * @param $data,统表信息
+
     * @method mixed create(array $data)
 
 ------------------------------------------------------------------------------
 
      * 同步更新各系统用户信息
      * @param $data,统表信息
+
     * @method mixed update(array $data)
 
 ------------------------------------------------------------------------------
@@ -29,12 +31,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * 成功返回: ["code" => "ok", "data" => ["username" => "chen6"]]
      * 失败返回: ["code" => "错误码", "data" => []]
      * 错误码: ok:成功, pass-error:密码错误, disabled:账号已禁用, user-nx:账号不存在
+
     * @method array verify(string $sysid,string $username,string $pass)
 
 ------------------------------------------------------------------------------
 
      * 获得角色列表组, 包括所有系统
      * @return array
+
     * @method array roleGroup()
 
     */
