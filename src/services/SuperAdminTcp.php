@@ -6,38 +6,32 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
 
- * 管理员
----------------------------------------------------------------
-    * @method mixed __construct()
+ * 统一后台账号管理
+------------------------------------------------------------------------------
 
----------------------------------------------------------------
-     * 创建一条记录
-     * @param $data
-    * @method mixed create($data)
+     * 同步创建各系统用户信息
+     * @param $data,统表信息
+    * @method mixed create(array $data)
 
----------------------------------------------------------------
-     * 更新一条记录
-    * @method mixed update($where)
+------------------------------------------------------------------------------
 
----------------------------------------------------------------
-     * 管理员登录口令判断
+     * 同步更新各系统用户信息
+     * @param $data,统表信息
+    * @method mixed update(array $data)
+
+------------------------------------------------------------------------------
+
+     * 登录校验
      * @param $sysid,系统标识符(haifang:海房,insurance:保险,operate:运营)
      * @param $username,用户名
      * @param $pass,密码
-     * @return array 本地用户表数据
-    * @method array checkUser(string $sysid,string $username,string $pass)
+     * @return string 本地系统用户名
+    * @method string verify(string $sysid,string $username,string $pass)
 
----------------------------------------------------------------
-     * 获得角色列表, 包括所有系统
-     * @param string $sysid
-     * @return mixed
-     * @throws \Exception
-    * @method mixed roleList(string $sysid)
+------------------------------------------------------------------------------
 
----------------------------------------------------------------
      * 获得角色列表组, 包括所有系统
      * @return mixed
-     * @throws \Exception
     * @method mixed roleGroup()
 
     */
