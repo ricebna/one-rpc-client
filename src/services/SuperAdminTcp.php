@@ -22,7 +22,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
      * 登录校验
-     * @param $sysid,系统标识符(haifang:海房,insurance:保险,operate:运营)
+     * @param $sysid,系统标识符(haifang:海房,insurance:保险,operate:运营,yimin:移民)
      * @param $username,用户名
      * @param $pass,密码
      * @return array
