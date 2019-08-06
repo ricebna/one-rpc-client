@@ -35,24 +35,34 @@ namespace OneRpcClient{
             if(!$this->service_name){
                 throw new \Exception('The property $service_name is not set');
             }
-            $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
-            $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
-            $param = ["passing" => true];
-            $param['tag'] = "rpc_$type";
-            $result = $helth->service($this->service_name,$param)->json();
+            $result = null;
+            if(function_exists('cache')){
+                $result = cache("consul_{$type}_{$this->service_name}");
+            }
             if(!$result){
-                $i = 10;
-                while($i--){
-                    $result = $helth->service($this->service_name,$param)->json();
-                    if($result){
-                        break;
+                $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
+                $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
+                $param = ["passing" => true];
+                $param['tag'] = "rpc_$type";
+                $result = $helth->service($this->service_name,$param)->json();
+                if(!$result){
+                    $i = 10;
+                    while($i--){
+                        $result = $helth->service($this->service_name,$param)->json();
+                        if($result){
+                            break;
+                        }
+                        if(!$i){
+                            throw new \Exception("The service $this->service_name is unavailable");
+                        }
+                        sleep(1);
                     }
-                    if(!$i){
-                        throw new \Exception("The service $this->service_name is unavailable");
-                    }
-                    sleep(1);
+                }
+                if(function_exists('cache')){
+                    cache("consul_{$type}_{$this->service_name}", $result, 3600*23);
                 }
             }
+
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
             return "$type://{$service['Address']}:{$service['Port']}";
         }
@@ -117,14 +127,14 @@ namespace OneRpcClient{
         {
             self::$is_static = 0;
 
-            $buffer = msgpack_pack($data);
+            $buffer = json_encode($data);//msgpack
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
             $len    = fwrite($this->getConnection(), $buffer);
 
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
             }
-            $data = msgpack_unpack($this->read());
+            $data = json_decode($this->read(),true);//msgpack
             if ($data === self::RPC_REMOTE_OBJ) {
                 $this->need_close = 1;
                 return $this;
@@ -176,11 +186,11 @@ namespace OneRpcClient{
                 'method'  => 'POST',
                 'header'  => 'Content-type: application/rpc',
                 'timeout' => 30,
-                'content' => msgpack_pack($data)
+                'content' => json_encode($data) //msgpack
             ]];
             $context = stream_context_create($opts);
             $result  = file_get_contents($this->getServer('http'), false, $context);
-            $data    = msgpack_unpack($result);
+            $data    = json_decode($result, true);//msgpack
             if ($data === self::RPC_REMOTE_OBJ) {
                 $this->need_close = 1;
                 return $this;
