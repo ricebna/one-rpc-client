@@ -139,7 +139,6 @@ namespace OneRpcClient{
                 $this->need_close = 1;
                 return $this;
             } else if (is_array($data) && isset($data['err'], $data['msg'])) {
-                dump($data);
                 throw new \Exception($data['msg'], $data['err']);
             } else {
                 return $data;
