@@ -196,4 +196,4 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\BookingRpc';
     } 
-} 
+}  
