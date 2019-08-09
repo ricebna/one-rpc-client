@@ -65,7 +65,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'age' => 55,
         ];
 
-    * @method array recommendList($condition)
+    * @method array recommendList(array $condition)
 
 ------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'keywords' => '安心',//产品关键词
         ];
 
-    * @method int getTotal($filter)
+    * @method int getTotal(array $filter)
 
 ------------------------------------------------------------------------------
 
@@ -93,7 +93,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'keywords' => '安心',
         ];
 
-    * @method array getList($filter,$page,$limit)
+    * @method array getList(array $filter,$page,$limit)
+
+------------------------------------------------------------------------------
+
+     * 删除一条记录
+     * @param $uuid
+     * @return int
+
+    * @method int delete(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -102,9 +110,90 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
     * @method array getEnumList()
 
+------------------------------------------------------------------------------
+
     */
     class MatchGoodsRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\MatchGoodsRpc';
+    } 
+} 
+
+/***************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 保险产品
+------------------------------------------------------------------------------
+
+
+    * @method mixed __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过一组产品uuid获取对应产品列表
+     * @param $uuid_list
+     * @return array
+
+    * @method array getListByUuidList(array $uuid_list)
+
+------------------------------------------------------------------------------
+
+    */
+    class ProductRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\ProductRpc';
+    } 
+} 
+
+/***************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 预约
+------------------------------------------------------------------------------
+
+
+    * @method mixed __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过手机号查询一条记录
+     * @param $mobile,手机号
+     * @return array
+
+    * @method array getOneByMobile(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 创建一条记录
+     * @param $data,预约信息
+     * @return bool|array 当手机号已存在时返回false,成功预约后返回某个咨询顾问的信息
+     * $data = [
+        'mobile' => '132233322',
+        'note' => '--备注信息--',
+        'call_name' => '称呼',
+        'insure_for' => 'self',//为谁投保(参见枚举列表)
+        ]
+
+    * @method bool create($data)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
+     * @return array
+
+    * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+    */
+    class BookingRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\BookingRpc';
     } 
 } 
