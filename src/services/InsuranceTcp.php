@@ -14,37 +14,93 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-     * 创建评估商品
-     * @param $data,商品全部信息
+     * 创建一条记录
+     * @param $data
+     * @return int
+     * $data = [
+        'people' => 'adult', //人群(参见枚举列表)
+        'income' => 300, //收入(参见枚举列表)
+        'is_male' => 1, //是否适用男性
+        'is_female' => 0, //是否适用女性
+        'age_min' => 12, //年龄最小值
+        'age_max' => 20, //年龄最大值
+        'product_uuid' => '2LGQ4NHPZLWGELXQ', //产品uuid
+        'insure_amount' => 500, //建议保额
+        'premium' => 30, //保费估算
+        'desc' => 'recommend description', //评估语
+        ]
 
-    * @method mixed create(array $data)
+    * @method int create(array $data)
 
 ------------------------------------------------------------------------------
 
-     * 同步更新各系统用户信息
-     * @param $data,统表信息
+     * 更新一条记录
+     * @param $data,商品全部信息,必须带有uuid
+     * @return int
+     * $data = [
+        'people' => 'old',
+        'income' => 500,
+        'is_male' => 1,
+        'is_female' => 0,
+        'age_min' => 12,
+        'age_max' => 20,
+        'product_uuid' => '2LGQ4NHPZLWGELXQ',
+        'insure_amount' => 500,
+        'premium' => 30,
+        'desc' => 'recommend description',
+        'uuid' => '2M2EXLCQJZ1J8B4Y',
+        ]
 
-    * @method mixed update(array $data)
+    * @method int update(array $data)
 
 ------------------------------------------------------------------------------
 
-     * 登录校验
-     * @param $sysid,系统标识符(haifang:海房,insurance:保险,operate:运营,yimin:移民)
-     * @param $username,用户名
-     * @param $pass,密码
+     * 获取智能评估结果列表
+     * @param $condition,评估条件
      * @return array
-     * 成功返回: ["code" => "ok", "msg" => "成功", "data" => ["username" => "chen6"]]
-     * 失败返回: ["code" => "错误码", "msg => "错误信息", "data" => []]
-     * 错误码: ok:成功, pass-error:密码错误, disabled:账号已禁用, user-nx:账号不存在
+     * $condition = [
+        'people' => 'old',
+        'income' => 500,
+        'gender' => 'male', //性别(参见枚举列表)
+        'age' => 55,
+        ];
 
-    * @method array verify(string $sysid,string $username,string $pass)
+    * @method array recommendList($condition)
 
 ------------------------------------------------------------------------------
 
-     * 获得角色列表组, 包括所有系统
+     * 获取总记录数
+     * @param $filter,过滤条件
+     * @return int
+     * $condition = [
+        'people' => 'old',
+        'income' => 500,
+        'keywords' => '安心',//产品关键词
+        ];
+
+    * @method int getTotal($filter)
+
+------------------------------------------------------------------------------
+
+     * 获取列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+     * $condition = [
+        'people' => 'old',
+        'income' => 500,
+        'keywords' => '安心',
+        ];
+
+    * @method array getList($filter,$page,$limit)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
      * @return array
 
-    * @method array roleGroup()
+    * @method array getEnumList()
 
     */
     class MatchGoodsRpc extends \OneRpcClient\RpcClientTcp { 
