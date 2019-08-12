@@ -16,7 +16,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 创建一条记录
      * @param $data
-     * @return int
+     * @return array 插入后的完整数据
      * $data = [
         'people' => 'adult', //人群(参见枚举列表)
         'income' => 300, //收入(参见枚举列表)
@@ -29,13 +29,13 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'desc' => 'recommend description', //评估语
         ]
 
-    * @method int create(array $data)
+    * @method array create(array $data)
 
 ------------------------------------------------------------------------------
 
      * 更新一条记录
      * @param $data,商品全部信息,必须带有uuid
-     * @return int
+     * @return int 影响数据库行数(1/0)
      * $data = [
         'people' => 'old',
         'income' => 500,
