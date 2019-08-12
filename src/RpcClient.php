@@ -37,7 +37,9 @@ namespace OneRpcClient{
             }
             $result = null;
             if(function_exists('cache')){
-                $result = unserialize(cache("consul_{$type}_{$this->service_name}"));
+                try {
+                    $result = unserialize(cache("consul_{$type}_{$this->service_name}"));
+                }catch (\Exception $e){}
             }
             if(!$result){
                 $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
