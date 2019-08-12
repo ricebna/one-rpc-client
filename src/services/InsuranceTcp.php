@@ -98,7 +98,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * 获取总记录数
      * @param $filter,过滤条件
      * @return int
-     * $condition = [
+     * $filter = [
         'people' => 'old',
         'income' => 500,
         'keywords' => '安心',//产品关键词
@@ -113,7 +113,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param int $page, //页码
      * @param int $limit //每页数量
      * @return array
-     * $condition = [
+     * $filter = [
         'people' => 'old',
         'income' => 500,
         'keywords' => '安心',
