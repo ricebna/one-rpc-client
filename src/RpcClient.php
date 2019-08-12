@@ -62,7 +62,6 @@ namespace OneRpcClient{
                     cache("consul_{$type}_{$this->service_name}", serialize($result), 3600*23);
                 }
             }
-var_dump($result);
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
             return "$type://{$service['Address']}:{$service['Port']}";
         }
