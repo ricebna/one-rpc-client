@@ -20,8 +20,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * $data = [
         'people' => 'adult', //人群(参见枚举列表)
         'income' => 300, //收入(参见枚举列表)
-        'is_male' => 1, //是否适用男性
-        'is_female' => 0, //是否适用女性
+        'gender' => ['male','female'], //性别,数组类型(参见枚举列表)
         'age_min' => 12, //年龄最小值
         'age_max' => 20, //年龄最大值
         'product_uuid' => '2LGQ4NHPZLWGELXQ', //产品uuid
@@ -40,8 +39,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * $data = [
         'people' => 'old',
         'income' => 500,
-        'is_male' => 1,
-        'is_female' => 0,
+        'gender' => ['male'],
         'age_min' => 12,
         'age_max' => 20,
         'product_uuid' => '2LGQ4NHPZLWGELXQ',
@@ -164,15 +162,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 通过手机号查询一条记录
      * @param $mobile,手机号
-     * @return array
+     * @return array|null
 
     * @method array getOneByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
-     * 创建一条记录
+     * 创建一条记录,一个手机号仅能成功创建一次
      * @param $data,预约信息
-     * @return bool|array 当手机号已存在时返回false,成功预约后返回某个咨询顾问的信息
+     * @return array 成功预约后返回某个咨询顾问的信息
      * $data = [
         'mobile' => '132233322',
         'note' => '--备注信息--',
@@ -180,7 +178,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'insure_for' => 'self',//为谁投保(参见枚举列表)
         ]
 
-    * @method bool create($data)
+    * @method array create($data)
 
 ------------------------------------------------------------------------------
 
@@ -196,4 +194,4 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\BookingRpc';
     } 
-}  
+} 
