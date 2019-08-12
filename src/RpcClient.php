@@ -37,7 +37,7 @@ namespace OneRpcClient{
             }
             $result = null;
             if(function_exists('cache')){
-                $result = cache("consul_{$type}_{$this->service_name}");
+                $result = unserialize(cache("consul_{$type}_{$this->service_name}"));
             }
             if(!$result){
                 $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
@@ -59,10 +59,10 @@ namespace OneRpcClient{
                     }
                 }
                 if(function_exists('cache')){
-                    cache("consul_{$type}_{$this->service_name}", $result, 3600*23);
+                    cache("consul_{$type}_{$this->service_name}", serialize($result), 3600*23);
                 }
             }
-
+var_dump($result);
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
             return "$type://{$service['Address']}:{$service['Port']}";
         }
