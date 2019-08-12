@@ -1,6 +1,6 @@
 <?php
 
-/***************************************************************************************************/
+/*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
 
@@ -50,6 +50,31 @@ namespace OneRpcClient\Tcp\App\Rpc {
         ]
 
     * @method int update(array $data)
+
+------------------------------------------------------------------------------
+
+     * 提交智能评估申请
+     * @param $data,提交全部信息
+     * @return array 插入后的完整数据
+     * $data = [
+        'insured_list' => [ //所有被保人信息
+        'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
+        'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
+        'children' => ['age' =>25, 'relation' => 'children'],
+        'parents' => ['age' =>25, 'relation' => 'parents'],
+        ],
+        'income' => 300, //收入
+        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,
+        'mobile' => '13211111111', //手机号
+        'gender' => 'male', //本人性别
+        ];
+
+    * @method array crateMatchIntention($data)
+
+------------------------------------------------------------------------------
+
+
+    * @method mixed getMatchIntentionByMobile($mobile)
 
 ------------------------------------------------------------------------------
 
@@ -110,6 +135,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
     */
     class MatchGoodsRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'insurance';
@@ -117,7 +150,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
     } 
 } 
 
-/***************************************************************************************************/
+/*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
 
@@ -139,6 +172,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
     */
     class ProductRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'insurance';
@@ -146,7 +187,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
     } 
 } 
 
-/***************************************************************************************************/
+/*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
 
@@ -164,7 +205,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $mobile,手机号
      * @return array|null
 
-    * @method array getOneByMobile(string $mobile)
+    * @method array getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -186,6 +227,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @return array
 
     * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
