@@ -57,14 +57,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $data,提交全部信息
      * @return array 插入后的完整数据
      * $data = [
-        'insured_list' => [ //所有被保人信息
-        'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
-        'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
-        'children' => ['age' =>25, 'relation' => 'children'],
-        'parents' => ['age' =>25, 'relation' => 'parents'],
+        'insured_list' => [ //所有被保人信息,数组类型
+            'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
+            'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
+            'children' => ['age' =>25, 'relation' => 'children'],
+            'parents' => ['age' =>25, 'relation' => 'parents'],
         ],
         'income' => 300, //收入
-        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,
+        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,数组类型
         'mobile' => '13211111111', //手机号
         'gender' => 'male', //本人性别
         ];
@@ -73,8 +73,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 通过手机号获取已提交的评估申请
+     * @param $mobile
+     * @return array||null
 
-    * @method mixed getMatchIntentionByMobile($mobile)
+    * @method array getMatchIntentionByMobile($mobile)
 
 ------------------------------------------------------------------------------
 
@@ -84,7 +87,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * $condition = [
         'people' => 'old',
         'income' => 500,
-        'gender' => 'male', //性别(参见枚举列表)
+        'gender' => 'male',
         'age' => 55,
         ];
 
