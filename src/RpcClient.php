@@ -174,6 +174,13 @@ namespace OneRpcClient{
             return substr($all_buffer, 4);
         }
 
+        public function __destruct()
+        {
+            if($this->connection){
+                fclose($this->connection);
+            }
+        }
+
     }
 
     class RpcClientHttp extends RpcClient
