@@ -53,34 +53,6 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-     * 提交智能评估申请
-     * @param $data,提交全部信息
-     * @return array 插入后的完整数据
-     * $data = [
-        'insured_list' => [ //所有被保人信息,数组类型
-            'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
-            'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
-            'children' => ['age' =>25, 'relation' => 'children'],
-            'parents' => ['age' =>25, 'relation' => 'parents'],
-        ],
-        'income' => 300, //收入
-        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,数组类型
-        'mobile' => '13211111111', //手机号
-        'gender' => 'male', //本人性别
-        ];
-
-    * @method array crateMatchIntention($data)
-
-------------------------------------------------------------------------------
-
-     * 通过手机号获取已提交的评估申请
-     * @param $mobile
-     * @return array||null
-
-    * @method array getMatchIntentionByMobile($mobile)
-
-------------------------------------------------------------------------------
-
      * 获取智能评估结果列表
      * @param $condition,评估条件
      * @return array
@@ -216,13 +188,20 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $data,预约信息
      * @return array 成功预约后返回某个咨询顾问的信息
      * $data = [
-        'mobile' => '132233322',
+        'mobile' => '13211111122',
         'note' => '--备注信息--',
-        'call_name' => '称呼',
-        'insure_for' => 'self',//为谁投保(参见枚举列表)
+        'call_name' => '陈陈',
+        'insure_for' => ['self','parents'],
         ]
 
-    * @method array create($data)
+    * @method array create($data,$log_data)
+
+------------------------------------------------------------------------------
+
+     * 创建一条重复预约日志
+     * @param $data
+
+    * @method mixed crateAgainLog($data)
 
 ------------------------------------------------------------------------------
 
@@ -245,5 +224,76 @@ namespace OneRpcClient\Tcp\App\Rpc {
     class BookingRpc extends \OneRpcClient\RpcClientTcp { 
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\BookingRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 评估申请
+------------------------------------------------------------------------------
+
+
+    * @method mixed __construct()
+
+------------------------------------------------------------------------------
+
+     * 创建一条记录
+     * @param $data
+     * @return array 插入后的完整数据
+     * $data = [
+        'insured_list' => [ //所有被保人信息,数组类型
+            'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
+            'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
+            'children' => ['age' =>25, 'relation' => 'children'],
+            'parents' => ['age' =>25, 'relation' => 'parents'],
+        ],
+        'income' => 300, //收入
+        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,数组类型
+        'mobile' => '13211111111', //手机号
+        'gender' => 'male', //本人性别
+        ];
+
+    * @method array create($data,$log_data)
+
+------------------------------------------------------------------------------
+
+     * 创建一条重复评估日志
+     * @param $data
+
+    * @method mixed crateAgainLog($data)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号获取已提交的评估申请
+     * @param $mobile
+     * @return array||null
+
+    * @method array getByMobile($mobile)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
+     * @return array
+
+    * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class MatchApplicationRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\MatchApplicationRpc';
     } 
 } 
