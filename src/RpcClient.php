@@ -213,13 +213,15 @@ namespace OneRpcClient{
 
     class RpcClientHttp extends RpcClient
     {
-        protected function _callRpc($data)
+        protected function callRpc($data)
         {
             self::$is_static = 0;
 
             $opts = ['http' => [
                 'method'  => 'POST',
-                'header'  => 'Content-type: application/rpc',
+                'header' => [
+                    'Content-type: application/rpc'
+                ],
                 'timeout' => 30,
                 'content' => json_encode($data) //msgpack
             ]];
