@@ -79,10 +79,11 @@ namespace OneRpcClient{
                 }
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
-            return "$type://{$service['Address']}:{$service['Port']}";
+            $server = "$type://{$service['Address']}:{$service['Port']}";
+            return $server;
         }
 
-        protected function mstime(){
+        protected static function mstime(){
             $mstime = explode(' ', microtime());
             return $mstime[0] + $mstime[1];
         }
@@ -91,7 +92,7 @@ namespace OneRpcClient{
         {
             self::$last_called = ['class' => $this->class, 'name' => $name, 'args' =>  $arguments, 'time' => '----'];
             self::$called_list["$this->class:$name"] = self::$last_called;
-            $begin = $this->mstime();
+            $begin = self::mstime();
             $result = $this->callRpc([
                 'i' => $this->id,
                 'c' => $this->class,
@@ -101,7 +102,7 @@ namespace OneRpcClient{
                 's' => self::$is_static,
                 'o' => $this->getToken(json_encode([$this->class, $name, $arguments, $this->args])),
             ]);
-            $time = sprintf('%01.2f',round($this->mstime() - $begin, 2));
+            $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
             self::$last_called['time'] = $time;
             self::$called_list["$this->class:$name"] = self::$last_called;
             return $result;
@@ -132,22 +133,23 @@ namespace OneRpcClient{
     class RpcClientTcp extends RpcClient
     {
 
-        protected $connection = null;
+        private $_connection = null;
 
         protected $time_out = 30;
 
-        protected function getConnection(){
-            if (!$this->connection) {
-                $this->connection = stream_socket_client($this->getServer(), $code, $msg, 3);
-                if (!$this->connection) {
-                    $this->connection = stream_socket_client($this->getServer(), $code, $msg, 6);
-                    if (!$this->connection) {
+        public function __construct(...$args)
+        {
+            parent::__construct($args);
+            if (!$this->_connection) {
+                $this->_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
+                if (!$this->_connection) {
+                    $this->_connection = stream_socket_client($this->getServer(), $code, $msg, 6);
+                    if (!$this->_connection) {
                         throw new \Exception($msg, 6);
                     }
                 }
-                stream_set_timeout($this->connection, $this->time_out);
+                stream_set_timeout($this->_connection, $this->time_out);
             }
-            return $this->connection;
         }
 
         protected function callRpc($data)
@@ -156,7 +158,7 @@ namespace OneRpcClient{
 
             $buffer = json_encode($data);//msgpack
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
-            $len    = fwrite($this->getConnection(), $buffer);
+            $len    = fwrite($this->_connection, $buffer);
 
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
@@ -179,7 +181,7 @@ namespace OneRpcClient{
             $head_read  = false;
             $time = time();
             while (1) {
-                $buffer = fread($this->getConnection(), 8192);
+                $buffer = fread($this->_connection, 8192);
                 if ($buffer === '' || $buffer === false) {
                     throw new \Exception('read from remote fail', 2);
                 }
@@ -202,8 +204,8 @@ namespace OneRpcClient{
 
         public function __destruct()
         {
-            if($this->connection){
-                fclose($this->connection);
+            if($this->_connection){
+                fclose($this->_connection);
             }
         }
 
