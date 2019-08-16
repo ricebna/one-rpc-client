@@ -10,6 +10,9 @@ namespace OneRpcClient{
 
         protected $need_close = 0;
 
+        public static $called_list = [];
+        public static $last_called = [];
+
         protected $remote_class_name = '';
 
         protected $secret = '';
@@ -79,9 +82,17 @@ namespace OneRpcClient{
             return "$type://{$service['Address']}:{$service['Port']}";
         }
 
+        protected function mstime(){
+            $mstime = explode(' ', microtime());
+            return $mstime[0] + $mstime[1];
+        }
+
         public function __call($name, $arguments)
         {
-            return $this->callRpc([
+            self::$last_called = ['class' => $this->class, 'name' => $name, 'args' =>  $arguments, 'time' => '----'];
+            self::$called_list["$this->class:$name"] = self::$last_called;
+            $begin = $this->mstime();
+            $result = $this->callRpc([
                 'i' => $this->id,
                 'c' => $this->class,
                 'f' => $name,
@@ -90,6 +101,10 @@ namespace OneRpcClient{
                 's' => self::$is_static,
                 'o' => $this->getToken(json_encode([$this->class, $name, $arguments, $this->args])),
             ]);
+            $time = sprintf('%01.2f',round($this->mstime() - $begin, 2));
+            self::$last_called['time'] = $time;
+            self::$called_list["$this->class:$name"] = self::$last_called;
+            return $result;
         }
 
         protected function uuid()
