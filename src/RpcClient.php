@@ -12,7 +12,7 @@ namespace OneRpcClient{
 
         protected $remote_class_name = '';
 
-        protected $token = '';
+        protected $secret = '';
 
         protected $consul_host = 'consul.client';
         protected $consul_port = '8520';
@@ -22,13 +22,24 @@ namespace OneRpcClient{
         public function __construct(...$args)
         {
             $this->id    = self::$call_id ? self::$call_id : $this->uuid();
-            $this->calss = $this->remote_class_name ? $this->remote_class_name : get_called_class();
+            $this->class = $this->remote_class_name ? $this->remote_class_name : get_called_class();
             $this->args  = $args;
         }
 
         public function setServerHost($host, $port){
             $this->consul_host = $host;
             $this->consul_port = $port;
+        }
+
+        public function setSecret($secret){
+            $this->secret = $secret;
+        }
+
+        public function getToken($param_str){
+            $time = time();
+            $token = md5($this->secret . $param_str . $time);
+            $token .= "|$time";
+            return $token;
         }
 
         protected function getServer($type = 'tcp'){
@@ -72,12 +83,12 @@ namespace OneRpcClient{
         {
             return $this->callRpc([
                 'i' => $this->id,
-                'c' => $this->calss,
+                'c' => $this->class,
                 'f' => $name,
                 'a' => $arguments,
                 't' => $this->args,
                 's' => self::$is_static,
-                'o' => $this->token,
+                'o' => $this->getToken(json_encode([$this->class, $name, $arguments, $this->args])),
             ]);
         }
 

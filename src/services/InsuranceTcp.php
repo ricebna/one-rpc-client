@@ -1,5 +1,5 @@
 <?php
-
+/**** 5 Classes, 24 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -120,6 +120,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
     */
     class MatchGoodsRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\MatchGoodsRpc';
     } 
@@ -147,6 +148,28 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+
+    * @method mixed addTags($product_uuid,$tags,$category)
+
+------------------------------------------------------------------------------
+
+     * 获得某类别或全部的tag,按类别分组,若构造实例时传入了产品uuid,则返回数据中会自动将关联的tag设置checked为true
+     * @param string $category
+     * @return array|mixed|null
+
+    * @method array getTagGroup($category,$product_uuid)
+
+------------------------------------------------------------------------------
+
+     * 获得二级tag列表
+     * @param $parent_name 父级名称
+     * @param $parent_uuid 父级uuid 可选(若传,则优先以uuid为条件查找)
+     * @return array
+
+    * @method array getTagChildren($parent_name,$parent_uuid)
+
+------------------------------------------------------------------------------
+
      * 通过uuid获取一条记录
      * @param $uuid
      * @return array|null
@@ -157,6 +180,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
     */
     class ProductRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\ProductRpc';
     } 
@@ -176,16 +200,10 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-     * 通过手机号查询一条记录
-     * @param $mobile,手机号
-     * @return array|null
-
-    * @method array getByMobile(string $mobile)
-
-------------------------------------------------------------------------------
-
      * 创建一条记录,一个手机号仅能成功创建一次
-     * @param $data,预约信息
+     * @param $data
+     * @param $source_data,用户来源信息,f_uid,f_action,f_ctime不需要传
+     * @param $log_data,日志信息,f_uid,f_content,f_action,f_ctime不需要传
      * @return array 成功预约后返回某个咨询顾问的信息
      * $data = [
         'mobile' => '13211111122',
@@ -194,14 +212,26 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'insure_for' => ['self','parents'],
         ]
 
-    * @method array create($data,$log_data)
+    * @method array create(array $data,array $source_data,array $log_data)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号查询一条记录
+     * @param $mobile,手机号
+     * @return array|null
+
+    * @method array getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
      * 创建一条重复预约日志
-     * @param $data
+     * @param $data,f_content,f_action,f_ctime不需要传,f_uid必传
+     * @return array
+     * $data = [
+        'f_uid' => '100011'
+        ]
 
-    * @method mixed crateAgainLog($data)
+    * @method array crateAgainLog(array $data)
 
 ------------------------------------------------------------------------------
 
@@ -222,6 +252,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
     */
     class BookingRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\BookingRpc';
     } 
@@ -243,6 +274,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 创建一条记录
      * @param $data
+     * @param $source_data,用户来源信息,f_uid,f_action,f_ctime不需要传
+     * @param $log_data,日志信息,f_uid,f_content,f_action,f_ctime不需要传
      * @return array 插入后的完整数据
      * $data = [
         'insured_list' => [ //所有被保人信息,数组类型
@@ -257,22 +290,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'gender' => 'male', //本人性别
         ];
 
-    * @method array create($data,$log_data)
+    * @method array create(array $data,array $source_data,array $log_data)
 
 ------------------------------------------------------------------------------
 
-     * 创建一条重复评估日志
-     * @param $data
-
-    * @method mixed crateAgainLog($data)
-
-------------------------------------------------------------------------------
-
-     * 通过手机号获取已提交的评估申请
+     * 通过手机号获取一条记录
      * @param $mobile
      * @return array||null
 
-    * @method array getByMobile($mobile)
+    * @method array getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -293,7 +319,46 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
     */
     class MatchApplicationRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\MatchApplicationRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 用户
+------------------------------------------------------------------------------
+
+
+    * @method mixed __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过手机号获取一条记录
+     * @param $mobile
+     * @return array||null
+
+    * @method array getByMobile(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class UserRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\UserRpc';
     } 
 } 
