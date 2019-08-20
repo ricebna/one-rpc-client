@@ -10,7 +10,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed __construct()
+    * @method  __construct()
 
 ------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $uuid
      * @return array|null
 
-    * @method array getByUuid(string $uuid)
+    * @method array|null getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed __construct()
+    * @method  __construct()
 
 ------------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed addTags($product_uuid,$tags,$category)
+    * @method  addTags($product_uuid,$tags,$category)
 
 ------------------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param string $category
      * @return array|mixed|null
 
-    * @method array getTagGroup($category,$product_uuid)
+    * @method array|mixed|null getTagGroup($category,$product_uuid)
 
 ------------------------------------------------------------------------------
 
@@ -174,7 +174,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $uuid
      * @return array|null
 
-    * @method array getByUuid(string $uuid)
+    * @method array|null getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed __construct()
+    * @method  __construct()
 
 ------------------------------------------------------------------------------
 
@@ -220,7 +220,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $mobile
      * @return array|null
 
-    * @method array getExpert(string $mobile)
+    * @method array|null getExpert(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -228,7 +228,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $mobile,手机号
      * @return array|null
 
-    * @method array getByMobile(string $mobile)
+    * @method array|null getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -254,7 +254,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $uuid
      * @return array|null
 
-    * @method array getByUuid(string $uuid)
+    * @method array|null getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -276,7 +276,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed __construct()
+    * @method  __construct()
 
 ------------------------------------------------------------------------------
 
@@ -304,9 +304,9 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 通过手机号获取一条记录
      * @param $mobile
-     * @return array||null
+     * @return array|null
 
-    * @method array getByMobile(string $mobile)
+    * @method array|null getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -321,7 +321,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $uuid
      * @return array|null
 
-    * @method array getByUuid(string $uuid)
+    * @method array|null getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -343,15 +343,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method mixed __construct()
+    * @method  __construct()
 
 ------------------------------------------------------------------------------
 
      * 通过手机号获取一条记录
      * @param $mobile
-     * @return array||null
+     * @return array|null
 
-    * @method array getByMobile(string $mobile)
+    * @method array|null getByMobile(string $mobile)
 
 ------------------------------------------------------------------------------
 
@@ -359,7 +359,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $uuid
      * @return array|null
 
-    * @method array getByUuid(string $uuid)
+    * @method array|null getByUuid(string $uuid)
 
 ------------------------------------------------------------------------------
 
