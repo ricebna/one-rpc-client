@@ -1,5 +1,5 @@
 <?php
-/**** 5 Classes, 24 Methods ****/
+/**** 5 Classes, 25 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -213,6 +213,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
         ]
 
     * @method array create(array $data,array $source_data,array $log_data)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号查询是否预约过, 如果预约过则返回专家信息
+     * @param $mobile
+     * @return array|null
+
+    * @method array getExpert(string $mobile)
 
 ------------------------------------------------------------------------------
 
