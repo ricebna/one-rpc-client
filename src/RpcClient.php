@@ -133,22 +133,22 @@ namespace OneRpcClient{
     class RpcClientTcp extends RpcClient
     {
 
-        private $_connection = null;
+        private static $_connection = null;
 
         protected $time_out = 30;
 
         public function __construct(...$args)
         {
             parent::__construct($args);
-            if (!$this->_connection) {
-                $this->_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
-                if (!$this->_connection) {
-                    $this->_connection = stream_socket_client($this->getServer(), $code, $msg, 6);
-                    if (!$this->_connection) {
+            if (!self::$_connection) {
+                self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
+                if (!self::$_connection) {
+                    self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 6);
+                    if (!self::$_connection) {
                         throw new \Exception($msg, 6);
                     }
                 }
-                stream_set_timeout($this->_connection, $this->time_out);
+                stream_set_timeout(self::$_connection, $this->time_out);
             }
         }
 
@@ -158,7 +158,7 @@ namespace OneRpcClient{
 
             $buffer = json_encode($data);//msgpack
             $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
-            $len    = fwrite($this->_connection, $buffer);
+            $len    = fwrite(self::$_connection, $buffer);
 
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
@@ -181,7 +181,7 @@ namespace OneRpcClient{
             $head_read  = false;
             $time = time();
             while (1) {
-                $buffer = fread($this->_connection, 8192);
+                $buffer = fread(self::$_connection, 8192);
                 if ($buffer === '' || $buffer === false) {
                     throw new \Exception('read from remote fail', 2);
                 }
@@ -200,13 +200,6 @@ namespace OneRpcClient{
                 }
             }
             return substr($all_buffer, 4);
-        }
-
-        public function __destruct()
-        {
-            if($this->_connection){
-                fclose($this->_connection);
-            }
         }
 
     }
