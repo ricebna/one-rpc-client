@@ -75,7 +75,7 @@ namespace OneRpcClient{
                     }
                 }
                 if(function_exists('cache')){
-                    cache("consul_{$type}_{$this->service_name}", serialize($result), 3600*23);
+                    cache("consul_{$type}_{$this->service_name}", serialize($result), 600);
                 }
             }
             $service = $result[mt_rand(0, count($result) - 1)]["Service"];
