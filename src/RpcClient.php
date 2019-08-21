@@ -1,235 +1,372 @@
 <?php
-namespace OneRpcClient{
-    class RpcClient
-    {
-        const RPC_REMOTE_OBJ = '#RpcRemoteObj#';
+/**** 5 Classes, 25 Methods ****/
+/*********************************************************************************************************/
 
-        public static $is_static = 0;
+namespace OneRpcClient\Tcp\App\Rpc {
 
-        public static $call_id = '';
+   /**
 
-        protected $need_close = 0;
+ * 评估推荐商品 MatchGoodsRpc 
+------------------------------------------------------------------------------
 
-        public static $called_list = [];
-        public static $last_called = [];
 
-        protected $remote_class_name = '';
+    * @method  __construct()
 
-        protected $secret = '';
+------------------------------------------------------------------------------
 
-        protected $consul_host = 'consul.client';
-        protected $consul_port = '8520';
+     * 创建一条记录
+     * @param $data
+     * @return array 插入后的完整数据
+     * $data = [
+        'people' => 'adult', //人群(参见枚举列表)
+        'income' => 300, //收入(参见枚举列表)
+        'gender' => ['male','female'], //性别,数组类型(参见枚举列表)
+        'age_min' => 12, //年龄最小值
+        'age_max' => 20, //年龄最大值
+        'product_uuid' => '2LGQ4NHPZLWGELXQ', //产品uuid
+        'insure_amount' => 500, //建议保额
+        'premium' => 30, //保费估算
+        'desc' => 'recommend description', //评估语
+        ]
 
-        protected $service_name = '';
+    * @method array create(array $data)
 
-        public function __construct(...$args)
-        {
-            $this->id    = self::$call_id ? self::$call_id : $this->uuid();
-            $this->class = $this->remote_class_name ? $this->remote_class_name : get_called_class();
-            $this->args  = $args;
-        }
+------------------------------------------------------------------------------
 
-        public function setServerHost($host, $port){
-            $this->consul_host = $host;
-            $this->consul_port = $port;
-        }
+     * 更新一条记录
+     * @param $data,商品全部信息,必须带有uuid
+     * @return int 影响数据库行数(1/0)
+     * $data = [
+        'people' => 'old',
+        'income' => 500,
+        'gender' => ['male'],
+        'age_min' => 12,
+        'age_max' => 20,
+        'product_uuid' => '2LGQ4NHPZLWGELXQ',
+        'insure_amount' => 500,
+        'premium' => 30,
+        'desc' => 'recommend description',
+        'uuid' => '2M2EXLCQJZ1J8B4Y',
+        ]
 
-        public function setSecret($secret){
-            $this->secret = $secret;
-        }
+    * @method int update(array $data)
 
-        public function getToken($param_str){
-            $time = time();
-            $token = md5($this->secret . $param_str . $time);
-            $token .= "|$time";
-            return $token;
-        }
+------------------------------------------------------------------------------
 
-        protected function getServer($type = 'tcp'){
-            if(!$this->service_name){
-                throw new \Exception('The property $service_name is not set');
-            }
-            $result = null;
-            if(function_exists('cache')){
-                try {
-                    $result = unserialize(cache("consul_{$type}_{$this->service_name}"));
-                }catch (\Exception $e){}
-            }
-            if(!$result){
-                $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
-                $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
-                $param = ["passing" => true];
-                $param['tag'] = "rpc_$type";
-                $result = $helth->service($this->service_name,$param)->json();
-                if(!$result){
-                    $i = 10;
-                    while($i--){
-                        $result = $helth->service($this->service_name,$param)->json();
-                        if($result){
-                            break;
-                        }
-                        if(!$i){
-                            throw new \Exception("The service $this->service_name is unavailable");
-                        }
-                        sleep(1);
-                    }
-                }
-                if(function_exists('cache')){
-                    cache("consul_{$type}_{$this->service_name}", serialize($result), 600);
-                }
-            }
-            $service = $result[mt_rand(0, count($result) - 1)]["Service"];
-            $server = "$type://{$service['Address']}:{$service['Port']}";
-            return $server;
-        }
+     * 获取智能评估结果列表
+     * @param $condition,评估条件
+     * @return array
+     * $condition = [
+        'people' => 'old',
+        'income' => 500,
+        'gender' => 'male',
+        'age' => 55,
+        ];
 
-        protected static function mstime(){
-            $mstime = explode(' ', microtime());
-            return $mstime[0] + $mstime[1];
-        }
+    * @method array recommendList(array $condition)
 
-        public function __call($name, $arguments)
-        {
-            self::$last_called = ['class' => $this->class, 'name' => $name, 'args' =>  $arguments, 'time' => '----'];
-            self::$called_list["$this->class:$name"] = self::$last_called;
-            $begin = self::mstime();
-            $result = $this->callRpc([
-                'i' => $this->id,
-                'c' => $this->class,
-                'f' => $name,
-                'a' => $arguments,
-                't' => $this->args,
-                's' => self::$is_static,
-                'o' => $this->getToken(json_encode([$this->class, $name, $arguments, $this->args])),
-            ]);
-            $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
-            self::$last_called['time'] = $time;
-            self::$called_list["$this->class:$name"] = self::$last_called;
-            return $result;
-        }
+------------------------------------------------------------------------------
 
-        protected function uuid()
-        {
-            $str = uniqid('', true);
-            $arr = explode('.', $str);
-            $str = $arr[0] . base_convert($arr[1], 10, 16);
-            $len = 32;
-            while (strlen($str) <= $len) {
-                $str .= bin2hex(openssl_random_pseudo_bytes(4));
-            }
-            $str = substr($str, 0, $len);
-            $str = str_replace(['+', '/', '='], '', base64_encode(hex2bin($str)));
-            return $str;
-        }
+     * 获取总记录数
+     * @param $filter,过滤条件
+     * @return int
+     * $filter = [
+        'people' => 'old',
+        'income' => 500,
+        'keywords' => '安心',//产品关键词
+        ];
 
-        public static function __callStatic($name, $arguments)
-        {
-            self::$is_static = 1;
-            return (new static)->{$name}(...$arguments);
-        }
+    * @method int getTotal(array $filter)
 
-    }
+------------------------------------------------------------------------------
 
-    class RpcClientTcp extends RpcClient
-    {
+     * 获取列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+     * $filter = [
+        'people' => 'old',
+        'income' => 500,
+        'keywords' => '安心',
+        ];
 
-        private static $_connection = null;
+    * @method array getList(array $filter,$page,$limit)
 
-        protected $time_out = 30;
+------------------------------------------------------------------------------
 
-        public function __construct(...$args)
-        {
-            parent::__construct($args);
-            if (!self::$_connection) {
-                self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
-                if (!self::$_connection) {
-                    self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 6);
-                    if (!self::$_connection) {
-                        throw new \Exception($msg, 6);
-                    }
-                }
-                stream_set_timeout(self::$_connection, $this->time_out);
-            }
-        }
+     * 删除一条记录
+     * @param $uuid
+     * @return int
 
-        protected function callRpc($data)
-        {
-            self::$is_static = 0;
+    * @method int delete(string $uuid)
 
-            $buffer = json_encode($data);//msgpack
-            $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
-            $len    = fwrite(self::$_connection, $buffer);
+------------------------------------------------------------------------------
 
-            if ($len !== strlen($buffer)) {
-                throw new \Exception('writeToRemote fail', 11);
-            }
-            $data = json_decode($this->read(),true);//msgpack
-            if ($data === self::RPC_REMOTE_OBJ) {
-                $this->need_close = 1;
-                return $this;
-            } else if (is_array($data) && isset($data['err'], $data['msg'])) {
-                throw new \Exception($data['msg'], $data['err']);
-            } else {
-                return $data;
-            }
-        }
+     * 获取预定义枚举列表
+     * @return array
 
-        protected function read()
-        {
-            $all_buffer = '';
-            $total_len  = 4;
-            $head_read  = false;
-            $time = time();
-            while (1) {
-                $buffer = fread(self::$_connection, 8192);
-                if ($buffer === '' || $buffer === false) {
-                    throw new \Exception('read from remote fail', 2);
-                }
-                $all_buffer .= $buffer;
-                $recv_len   = strlen($all_buffer);
-                if ($recv_len >= $total_len) {
-                    if ($head_read) {
-                        break;
-                    }
-                    $unpack_data = unpack('Ntotal_length', $all_buffer);
-                    $total_len   = $unpack_data['total_length'];
-                    if ($recv_len >= $total_len) {
-                        break;
-                    }
-                    $head_read = true;
-                }
-            }
-            return substr($all_buffer, 4);
-        }
+    * @method array getEnumList()
 
-    }
+------------------------------------------------------------------------------
 
-    class RpcClientHttp extends RpcClient
-    {
-        protected function callRpc($data)
-        {
-            self::$is_static = 0;
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
 
-            $opts = ['http' => [
-                'method'  => 'POST',
-                'header' => [
-                    'Content-type: application/rpc'
-                ],
-                'timeout' => 30,
-                'content' => json_encode($data) //msgpack
-            ]];
-            $context = stream_context_create($opts);
-            $result  = file_get_contents($this->getServer('http'), false, $context);
-            $data    = json_decode($result, true);//msgpack
-            if ($data === self::RPC_REMOTE_OBJ) {
-                $this->need_close = 1;
-                return $this;
-            } else if (is_array($data) && isset($data['err'], $data['msg'])) {
-                throw new \Exception($data['msg'], $data['err']);
-            } else {
-                return $data;
-            }
-        }
+    * @method array|null getByUuid(string $uuid)
 
-    }
-}
+------------------------------------------------------------------------------
+
+    */
+    class MatchGoodsRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\MatchGoodsRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 保险产品 ProductRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过一组产品uuid获取对应产品列表
+     * @param $uuid_list
+     * @return array
+
+    * @method array getListByUuidList(array $uuid_list)
+
+------------------------------------------------------------------------------
+
+
+    * @method  addTags($product_uuid,$tags,$category)
+
+------------------------------------------------------------------------------
+
+     * 获得某类别或全部的tag,按类别分组,若构造实例时传入了产品uuid,则返回数据中会自动将关联的tag设置checked为true
+     * @param string $category
+     * @return array|mixed|null
+
+    * @method array|mixed|null getTagGroup($category,$product_uuid)
+
+------------------------------------------------------------------------------
+
+     * 获得二级tag列表
+     * @param $parent_name 父级名称
+     * @param $parent_uuid 父级uuid 可选(若传,则优先以uuid为条件查找)
+     * @return array
+
+    * @method array getTagChildren($parent_name,$parent_uuid)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class ProductRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\ProductRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 预约 BookingRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 创建一条记录,一个手机号仅能成功创建一次
+     * @param $data
+     * @param $source_data,用户来源信息,f_uid,f_action,f_ctime不需要传
+     * @param $log_data,日志信息,f_uid,f_content,f_action,f_ctime不需要传
+     * @return array 成功预约后返回某个咨询顾问的信息
+     * $data = [
+        'mobile' => '13211111122',
+        'note' => '--备注信息--',
+        'call_name' => '陈陈',
+        'insure_for' => ['self','parents'],
+        ]
+
+    * @method array create(array $data,array $source_data,array $log_data)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号查询是否预约过, 如果预约过则返回专家信息
+     * @param $mobile
+     * @return array|null
+
+    * @method array|null getExpert(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号查询一条记录
+     * @param $mobile,手机号
+     * @return array|null
+
+    * @method array|null getByMobile(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 创建一条重复预约日志
+     * @param $data,f_content,f_action,f_ctime不需要传,f_uid必传
+     * @return array
+     * $data = [
+        'f_uid' => '100011'
+        ]
+
+    * @method array crateAgainLog(array $data)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
+     * @return array
+
+    * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class BookingRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\BookingRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 评估申请 MatchApplicationRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 创建一条记录
+     * @param $data
+     * @param $source_data,用户来源信息,f_uid,f_action,f_ctime不需要传
+     * @param $log_data,日志信息,f_uid,f_content,f_action,f_ctime不需要传
+     * @return array 插入后的完整数据
+     * $data = [
+        'insured_list' => [ //所有被保人信息,数组类型
+            'spouse' => ['age' =>25, 'gender' => 'male', 'relation' => 'spouse'],
+            'self' => ['age' =>25, 'gender' => 'female', 'relation' => 'self'],
+            'children' => ['age' =>25, 'relation' => 'children'],
+            'parents' => ['age' =>25, 'relation' => 'parents'],
+        ],
+        'income' => 300, //收入
+        'ever_bought' => ['人寿', '健康'], //之前购买过的产品,数组类型
+        'mobile' => '13211111111', //手机号
+        'gender' => 'male', //本人性别
+        ];
+
+    * @method array create(array $data,array $source_data,array $log_data)
+
+------------------------------------------------------------------------------
+
+     * 通过手机号获取一条记录
+     * @param $mobile
+     * @return array|null
+
+    * @method array|null getByMobile(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
+     * @return array
+
+    * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class MatchApplicationRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\MatchApplicationRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 用户 UserRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过手机号获取一条记录
+     * @param $mobile
+     * @return array|null
+
+    * @method array|null getByMobile(string $mobile)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class UserRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\UserRpc';
+    } 
+} 
