@@ -1,5 +1,5 @@
 <?php
-/**** 5 Classes, 24 Methods ****/
+/**** 7 Classes, 34 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -364,5 +364,140 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\UserRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 商品 GoodsRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 通过code获取一条标签记录
+     * @param $category,分类标识符
+     * @param $code
+     * @return array|null
+
+    * @method array|null getTagByCode(string $category,$code)
+
+------------------------------------------------------------------------------
+
+
+    * @method  addSort($goods_list,$query)
+
+------------------------------------------------------------------------------
+
+     * 商品排序, 每一组查询条件的排序都可能不同, 查询条件根据键名升序排列.
+     * @param $goods_list
+     * @param $query
+     * @return array
+
+    * @method array sort($goods_list,$query)
+
+------------------------------------------------------------------------------
+
+
+    * @method  addTags($goods_uuid,$tags,$category)
+
+------------------------------------------------------------------------------
+
+     * 获得某类别或全部的tag,按类别分组,若构造实例时传入了商品uuid,则返回数据中会自动将关联的tag设置checked为true
+     * @param string $category
+     * @return array|mixed|null
+
+    * @method array|mixed|null getTagGroup($category,$goods_uuid)
+
+------------------------------------------------------------------------------
+
+     * 获得二级tag列表
+     * @param $parent_name 父级名称
+     * @param $parent_uuid 父级uuid 可选(若传,则优先以uuid为条件查找)
+     * @return array
+
+    * @method array getTagChildren($parent_name,$parent_uuid)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class GoodsRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\GoodsRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+
+ * 缓存处理
+ * 用法:
+    $data = cache('api-goods-list');
+    //使用isKeyValid判断'api-goods-list'缓存键是否有效(该缓存归属goods_list分组)
+    if(!$data || !$client->isKeyValid('goods_list', 'api-goods-list')){
+        $data = getlist();
+        cache('api-goods-list', $data);
+        //使用用updateKey更新缓存键为有效
+        $client->updateKey('goods_list', 'api-goods-list');
+    }
+    return $data; CacheRpc 
+------------------------------------------------------------------------------
+
+
+    * @method  __construct()
+
+------------------------------------------------------------------------------
+
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isKeyValid(string $group,string $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为最新版
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateKey(string $group,string $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组版本
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateGroup(string $group)
+
+------------------------------------------------------------------------------
+
+    */
+    class CacheRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\CacheRpc';
     } 
 } 
