@@ -38,7 +38,7 @@ namespace OneRpcClient{
             $this->secret = $secret;
         }
 
-        public function getToken($param_str){
+        protected function getToken($param_str){
             $time = time();
             $token = md5($this->secret . $param_str . $time);
             $token .= "|$time";
