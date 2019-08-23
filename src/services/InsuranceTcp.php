@@ -448,7 +448,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
 
- * 缓存处理
+ * 缓存更新策略
  * 用法:
     $data = cache('api-goods-list');
     //使用isKeyValid判断'api-goods-list'缓存键是否有效(该缓存归属goods_list分组)
@@ -458,7 +458,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         //使用用updateKey更新缓存键为有效
         $client->updateKey('goods_list', 'api-goods-list');
     }
-    return $data; CacheRpc 
+    return $data; CacheStrategyRpc 
 ------------------------------------------------------------------------------
 
 
@@ -476,7 +476,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-     * 更新缓存键为最新版
+     * 更新缓存键为有效
      * @param $group,缓存分组标识符
      * @param $key
      * @return bool
@@ -485,7 +485,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-     * 更新缓存分组版本
+     * 更新缓存分组
      * @param $group
      * @return bool
      * @throws \Exception
@@ -495,9 +495,9 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
     */
-    class CacheRpc extends \OneRpcClient\RpcClientTcp { 
+    class CacheStrategyRpc extends \OneRpcClient\RpcClientTcp { 
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
-        protected $remote_class_name = 'App\Rpc\CacheRpc';
+        protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
     } 
 } 
