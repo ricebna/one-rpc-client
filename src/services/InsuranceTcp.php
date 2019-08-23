@@ -5,13 +5,8 @@
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 评估推荐商品 MatchGoodsRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * MatchGoodsRpc 
+ * 评估推荐商品 
 ------------------------------------------------------------------------------
 
      * 创建一条记录
@@ -131,13 +126,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 保险产品 ProductRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * ProductRpc 
+ * 保险产品 
 ------------------------------------------------------------------------------
 
      * 通过一组产品uuid获取对应产品列表
@@ -169,13 +159,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 预约 BookingRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * BookingRpc 
+ * 预约 
 ------------------------------------------------------------------------------
 
      * 创建一条记录,一个手机号仅能成功创建一次
@@ -258,13 +243,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 评估申请 MatchApplicationRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * MatchApplicationRpc 
+ * 评估申请 
 ------------------------------------------------------------------------------
 
      * 创建一条记录
@@ -334,13 +314,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 用户 UserRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * UserRpc 
+ * 用户 
 ------------------------------------------------------------------------------
 
      * 通过手机号获取一条记录
@@ -372,13 +347,8 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
- * 商品 GoodsRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+ * GoodsRpc 
+ * 商品 
 ------------------------------------------------------------------------------
 
      * 通过code获取一条标签记录
@@ -447,7 +417,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 namespace OneRpcClient\Tcp\App\Rpc {
 
    /**
-
+ * CacheStrategyRpc 
  * 缓存更新策略
  * 用法:
     $data = cache('api-goods-list');
@@ -458,12 +428,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         //使用用updateKey更新缓存键为有效
         $client->updateKey('goods_list', 'api-goods-list');
     }
-    return $data; CacheStrategyRpc 
-------------------------------------------------------------------------------
-
-
-    * @method  __construct()
-
+    return $data; 
 ------------------------------------------------------------------------------
 
      * 判断缓存是否有效
