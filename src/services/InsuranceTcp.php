@@ -86,7 +86,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'keywords' => '安心',
         ];
 
-    * @method array getList(array $filter,$page,$limit)
+    * @method array getList(array $filter, $page, $limit)
 
 ------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'insure_for' => ['self','parents'],
         ]
 
-    * @method array create(array $data,array $source_data,array $log_data)
+    * @method array create(array $data, array $source_data, array $log_data)
 
 ------------------------------------------------------------------------------
 
@@ -200,7 +200,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $limit,记录数,默认1条,最多10条
      * @return array|null
 
-    * @method array|null getListByUserId(string $user_id,$limit)
+    * @method array|null getListByUserId(string $user_id, $limit)
 
 ------------------------------------------------------------------------------
 
@@ -265,7 +265,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'gender' => 'male', //本人性别
         ];
 
-    * @method array create(array $data,array $source_data,array $log_data)
+    * @method array create(array $data, array $source_data, array $log_data)
 
 ------------------------------------------------------------------------------
 
@@ -282,7 +282,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $limit,记录数,默认1条,最多10条
      * @return array|null
 
-    * @method array|null getListByUserId(string $user_id,$limit)
+    * @method array|null getListByUserId(string $user_id, $limit)
 
 ------------------------------------------------------------------------------
 
@@ -356,12 +356,12 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $code
      * @return array|null
 
-    * @method array|null getTagByCode(string $category,$code)
+    * @method array|null getTagByCode(string $category, $code)
 
 ------------------------------------------------------------------------------
 
 
-    * @method  addSort($goods_list,$query)
+    * @method  addSort($goods_list, $query)
 
 ------------------------------------------------------------------------------
 
@@ -370,12 +370,12 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $query
      * @return array
 
-    * @method array sort($goods_list,$query)
+    * @method array sort($goods_list, $query)
 
 ------------------------------------------------------------------------------
 
 
-    * @method  addTags($goods_uuid,$tags,$category)
+    * @method  addTags($goods_uuid, $tags, $category)
 
 ------------------------------------------------------------------------------
 
@@ -383,7 +383,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param string $category
      * @return array|mixed|null
 
-    * @method array|mixed|null getTagGroup($category,$goods_uuid)
+    * @method array|mixed|null getTagGroup($category, $goods_uuid)
 
 ------------------------------------------------------------------------------
 
@@ -392,7 +392,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $parent_uuid 父级uuid 可选(若传,则优先以uuid为条件查找)
      * @return array
 
-    * @method array getTagChildren($parent_name,$parent_uuid)
+    * @method array getTagChildren($parent_name, $parent_uuid)
 
 ------------------------------------------------------------------------------
 
@@ -437,7 +437,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @return bool
      * @throws \Exception
 
-    * @method bool isKeyValid(string $group,string $key)
+    * @method bool isKeyValid(string $group, string $key)
 
 ------------------------------------------------------------------------------
 
@@ -446,7 +446,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $key
      * @return bool
 
-    * @method bool updateKey(string $group,string $key)
+    * @method bool updateKey(string $group, string $key)
 
 ------------------------------------------------------------------------------
 
