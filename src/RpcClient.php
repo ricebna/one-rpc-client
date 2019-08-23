@@ -67,7 +67,11 @@ namespace OneRpcClient{
                         $url = "http://$this->consul_host:$this->consul_port/v1/health/service/$this->service_name?passing=1&tag=rpc_$type";
                         $result = file_get_contents($url);
                         $result = json_decode($result, true);
-                    }catch (\Exception $e){}
+                    }catch (\Exception $e){
+                        if(!$i){
+                            throw new \Exception("The service $this->service_name is unavailable,". $e->getMessage());
+                        }
+                    }
                     if($result){
                         break;
                     }
