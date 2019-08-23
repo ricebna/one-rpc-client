@@ -55,23 +55,24 @@ namespace OneRpcClient{
                     $result = unserialize(cache("consul_{$type}_{$this->service_name}"));
                 }catch (\Exception $e){}
             }
-            if(!$result){
-                $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
-                $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
-                $param = ["passing" => true];
-                $param['tag'] = "rpc_$type";
-                $result = $helth->service($this->service_name,$param)->json();
-                if(!$result){
-                    $i = 10;
-                    while($i--){
-                        $result = $helth->service($this->service_name,$param)->json();
-                        if($result){
-                            break;
-                        }
-                        if(!$i){
-                            throw new \Exception("The service $this->service_name is unavailable");
-                        }
-                        sleep(1);
+            if(!$result){$t=self::mstime();
+//                $sf = new \SensioLabs\Consul\ServiceFactory(["base_uri"=>"http://$this->consul_host:$this->consul_port/"]);
+//                $helth = $sf->get(\SensioLabs\Consul\Services\HealthInterface::class);
+//                $param = ["passing" => true];
+//                $param['tag'] = "rpc_$type";
+                $i = 10000;
+                while($i--){
+//                    $result = $helth->service($this->service_name,$param)->json();
+                    try{
+                        $url = "http://$this->consul_host:$this->consul_port/v1/health/service/$this->service_name?passing=1&tag=rpc_$type";
+                        $result = file_get_contents($url);
+                        $result = json_decode($result, true);
+                    }catch (\Exception $e){}
+                    if($result){
+                        break;
+                    }
+                    if(!$i){
+                        throw new \Exception("The service $this->service_name is unavailable");
                     }
                 }
                 if(function_exists('cache')){
