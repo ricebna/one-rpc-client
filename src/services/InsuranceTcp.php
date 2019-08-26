@@ -1,5 +1,5 @@
 <?php
-/**** 7 Classes, 34 Methods ****/
+/**** 8 Classes, 44 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -86,7 +86,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
         'keywords' => '安心',
         ];
 
-    * @method array getList(array $filter, $page, $limit)
+    * @method array getList(array $filter, $page, $limit, $sort)
 
 ------------------------------------------------------------------------------
 
@@ -351,17 +351,61 @@ namespace OneRpcClient\Tcp\App\Rpc {
  * 商品 
 ------------------------------------------------------------------------------
 
-     * 通过code获取一条标签记录
-     * @param $category,分类标识符
-     * @param $code
-     * @return array|null
+     * 创建一条记录
+     * @param $data
+     * @return array 插入后的完整数据
+     * $data = [
+    'people' => 'adult', //人群(参见枚举列表)
+    'income' => 300, //收入(参见枚举列表)
+    'gender' => ['male','female'], //性别,数组类型(参见枚举列表)
+    'age_min' => 12, //年龄最小值
+    'age_max' => 20, //年龄最大值
+    'product_uuid' => '2LGQ4NHPZLWGELXQ', //产品uuid
+    'insure_amount' => 500, //建议保额
+    'premium' => 30, //保费估算
+    'desc' => 'recommend description', //评估语
+    ]
 
-    * @method array|null getTagByCode(string $category, $code)
+    * @method array create(array $data)
+
+------------------------------------------------------------------------------
+
+     * 更新一条记录
+     * @param $data,商品全部信息,必须带有uuid
+     * @return int 影响数据库行数(1/0)
+
+    * @method int update(array $data)
 
 ------------------------------------------------------------------------------
 
 
-    * @method  addSort($goods_list, $query)
+    * @method  addSort($data)
+
+------------------------------------------------------------------------------
+
+     * 获取总记录数
+     * @param $filter,过滤条件
+     * @return int
+
+    * @method int getTotal(array $filter)
+
+------------------------------------------------------------------------------
+
+     * 获取列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+
+    * @method array getList(array $filter, $page, $limit, $sort)
+
+------------------------------------------------------------------------------
+
+     * 删除一条记录
+     * @param $uuid
+     * @return int
+
+    * @method int delete(string $uuid)
 
 ------------------------------------------------------------------------------
 
@@ -375,24 +419,22 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method  addTags($goods_uuid, $tags, $category)
+    * @method  getCheckedTagGroup($goods_uuid, $category)
 
 ------------------------------------------------------------------------------
 
-     * 获得某类别或全部的tag,按类别分组,若构造实例时传入了商品uuid,则返回数据中会自动将关联的tag设置checked为true
-     * @param string $category
-     * @return array|mixed|null
-
-    * @method array|mixed|null getTagGroup($category, $goods_uuid)
-
-------------------------------------------------------------------------------
-
-     * 获得二级tag列表
-     * @param $parent_name 父级名称
-     * @param $parent_uuid 父级uuid 可选(若传,则优先以uuid为条件查找)
+     * 获取一级导航列表
      * @return array
 
-    * @method array getTagChildren($parent_name, $parent_uuid)
+    * @method array getExGoodsNaviList()
+
+------------------------------------------------------------------------------
+
+     * 根据一级导航获取二级导航列表
+     * @param $navi_tag_uuid,一级导航uuid
+     * @return array
+
+    * @method array getExGoodsSecondNaviList(string $navi_tag_uuid)
 
 ------------------------------------------------------------------------------
 
@@ -409,6 +451,60 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\GoodsRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * GoodsTagRpc 
+ * 商品标签 
+------------------------------------------------------------------------------
+
+
+    * @method  saveNavi($data, $cache_data)
+
+------------------------------------------------------------------------------
+
+     * 通过code获取一条标签记录
+     * @param $category,分类标识符
+     * @param $code
+     * @return array|null
+
+    * @method array|null getByCode(string $category, $code)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getByName(string $category, $name)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getChildrenByName($name)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getGroup($category)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class GoodsTagRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\GoodsTagRpc';
     } 
 } 
 
