@@ -1,5 +1,5 @@
 <?php
-/**** 8 Classes, 49 Methods ****/
+/**** 9 Classes, 54 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -588,5 +588,54 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * ProductTagRpc 
+ * 产品标签 
+------------------------------------------------------------------------------
+
+     * 通过code获取一条标签记录
+     * @param $category,分类标识符
+     * @param $code
+     * @return array|null
+
+    * @method array|null getByCode(string $category, $code)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getByName(string $category, $name)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getChildrenByName($name)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getGroup($category)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class ProductTagRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\ProductTagRpc';
     } 
 } 
