@@ -1,5 +1,5 @@
 <?php
-/**** 8 Classes, 44 Methods ****/
+/**** 8 Classes, 49 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -130,11 +130,50 @@ namespace OneRpcClient\Tcp\App\Rpc {
  * 保险产品 
 ------------------------------------------------------------------------------
 
+     * 创建一条记录
+     * @param $data
+     * @return array 插入后的完整数据
+
+    * @method array create(array $data)
+
+------------------------------------------------------------------------------
+
+     * 更新一条记录
+     * @param $data,商品全部信息,必须带有uuid
+     * @return int 影响数据库行数(1/0)
+
+    * @method int update(array $data)
+
+------------------------------------------------------------------------------
+
+     * 获取总记录数
+     * @param $filter,过滤条件
+     * @return int
+
+    * @method int getTotal(array $filter)
+
+------------------------------------------------------------------------------
+
+     * 获取列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+
+    * @method array getList(array $filter, $page, $limit, $sort)
+
+------------------------------------------------------------------------------
+
      * 通过一组产品uuid获取对应产品列表
      * @param $uuid_list
      * @return array
 
     * @method array getListByUuidList(array $uuid_list)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getCheckedTagGroup($goods_uuid, $category)
 
 ------------------------------------------------------------------------------
 
@@ -354,17 +393,6 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * 创建一条记录
      * @param $data
      * @return array 插入后的完整数据
-     * $data = [
-    'people' => 'adult', //人群(参见枚举列表)
-    'income' => 300, //收入(参见枚举列表)
-    'gender' => ['male','female'], //性别,数组类型(参见枚举列表)
-    'age_min' => 12, //年龄最小值
-    'age_max' => 20, //年龄最大值
-    'product_uuid' => '2LGQ4NHPZLWGELXQ', //产品uuid
-    'insure_amount' => 500, //建议保额
-    'premium' => 30, //保费估算
-    'desc' => 'recommend description', //评估语
-    ]
 
     * @method array create(array $data)
 
