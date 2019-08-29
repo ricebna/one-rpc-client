@@ -132,7 +132,8 @@ namespace OneRpcClient{
         public static function __callStatic($name, $arguments)
         {
             self::$is_static = 1;
-            return (new static)->{$name}(...$arguments);
+            //return (new static)->{$name}(...$arguments);
+            return (new static)->{$name}();
         }
 
     }
