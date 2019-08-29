@@ -22,11 +22,13 @@ namespace OneRpcClient{
 
         protected $service_name = '';
 
-        public function __construct(...$args)
+        //public function __construct(...$args)
+        public function __construct()
         {
             $this->id    = self::$call_id ? self::$call_id : $this->uuid();
             $this->class = $this->remote_class_name ? $this->remote_class_name : get_called_class();
-            $this->args  = $args;
+            //$this->args  = $args;
+            $this->args  = null;
         }
 
         public function setServerHost($host, $port){
@@ -142,9 +144,11 @@ namespace OneRpcClient{
 
         protected $time_out = 30;
 
-        public function __construct(...$args)
+        //public function __construct(...$args)
+        public function __construct()
         {
-            parent::__construct($args);
+            //parent::__construct($args);
+            parent::__construct();
             if (!self::$_connection) {
                 self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
                 if (!self::$_connection) {

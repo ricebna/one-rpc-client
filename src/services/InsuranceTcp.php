@@ -1,5 +1,5 @@
 <?php
-/**** 9 Classes, 54 Methods ****/
+/**** 9 Classes, 64 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -164,6 +164,14 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 删除一条记录
+     * @param $uuid
+     * @return int
+
+    * @method int delete(string $uuid)
+
+------------------------------------------------------------------------------
+
      * 通过一组产品uuid获取对应产品列表
      * @param $uuid_list
      * @return array
@@ -182,6 +190,34 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @return array|null
 
     * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isCacheKeyValid(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateCacheKey(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateCacheGroup(string $group)
 
 ------------------------------------------------------------------------------
 
@@ -406,8 +442,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 保存列表排序
+     * @param $data
+     * @return bool
 
-    * @method  addSort($data)
+    * @method bool addSort($data)
 
 ------------------------------------------------------------------------------
 
@@ -474,6 +513,34 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isCacheKeyValid(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateCacheKey(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateCacheGroup(string $group)
+
+------------------------------------------------------------------------------
+
     */
     class GoodsRpc extends \OneRpcClient\RpcClientTcp { 
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
@@ -528,40 +595,13 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
-    */
-    class GoodsTagRpc extends \OneRpcClient\RpcClientTcp { 
-        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
-        protected $service_name = 'insurance';
-        protected $remote_class_name = 'App\Rpc\GoodsTagRpc';
-    } 
-} 
-
-/*********************************************************************************************************/
-
-namespace OneRpcClient\Tcp\App\Rpc {
-
-   /**
- * CacheStrategyRpc 
- * 缓存更新策略
- * 用法:
-    $data = cache('api-goods-list');
-    //使用isKeyValid判断'api-goods-list'缓存键是否有效(该缓存归属goods_list分组)
-    if(!$data || !$client->isKeyValid('goods_list', 'api-goods-list')){
-        $data = getlist();
-        cache('api-goods-list', $data);
-        //使用用updateKey更新缓存键为有效
-        $client->updateKey('goods_list', 'api-goods-list');
-    }
-    return $data; 
-------------------------------------------------------------------------------
-
      * 判断缓存是否有效
      * @param $group,缓存分组标识符
      * @param $key
      * @return bool
      * @throws \Exception
 
-    * @method bool isKeyValid(string $group, string $key)
+    * @method bool isCacheKeyValid(string $group, $key)
 
 ------------------------------------------------------------------------------
 
@@ -570,7 +610,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @param $key
      * @return bool
 
-    * @method bool updateKey(string $group, string $key)
+    * @method bool updateCacheKey(string $group, $key)
 
 ------------------------------------------------------------------------------
 
@@ -579,15 +619,15 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @return bool
      * @throws \Exception
 
-    * @method bool updateGroup(string $group)
+    * @method bool updateCacheGroup(string $group)
 
 ------------------------------------------------------------------------------
 
     */
-    class CacheStrategyRpc extends \OneRpcClient\RpcClientTcp { 
+    class GoodsTagRpc extends \OneRpcClient\RpcClientTcp { 
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
-        protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
+        protected $remote_class_name = 'App\Rpc\GoodsTagRpc';
     } 
 } 
 
@@ -637,5 +677,60 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\ProductTagRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * CacheStrategyRpc 
+ * 缓存更新策略
+ * 用法:
+    $data = cache('api-goods-list');
+    //使用 isCacheKeyValid 判断'api-goods-list'缓存键是否有效(该缓存归属goods_list分组)
+    if(!$data || !$client->isCacheKeyValid('goods_list', 'api-goods-list')){
+        $data = getlist();
+        cache('api-goods-list', $data);
+        //使用用 updateCacheKey 更新缓存键为有效
+        $client->updateCacheKey('goods_list', 'api-goods-list');
+    }
+    return $data; 
+------------------------------------------------------------------------------
+
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isCacheKeyValid(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateCacheKey(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateCacheGroup(string $group)
+
+------------------------------------------------------------------------------
+
+    */
+    class CacheStrategyRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
     } 
 } 
