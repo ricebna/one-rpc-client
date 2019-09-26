@@ -1,5 +1,5 @@
 <?php
-/**** 9 Classes, 64 Methods ****/
+/**** 11 Classes, 77 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -499,9 +499,10 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
      * 根据一级导航获取二级导航列表
      * @param $navi_tag_uuid,一级导航uuid
+     * @param $navi_tag_code,一级导航code
      * @return array
 
-    * @method array getExGoodsSecondNaviList(string $navi_tag_uuid)
+    * @method array getExGoodsSecondNaviList(string $navi_tag_uuid, string $navi_tag_code)
 
 ------------------------------------------------------------------------------
 
@@ -640,6 +641,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
  * 产品标签 
 ------------------------------------------------------------------------------
 
+
+    * @method  create($data)
+
+------------------------------------------------------------------------------
+
      * 通过code获取一条标签记录
      * @param $category,分类标识符
      * @param $code
@@ -732,5 +738,140 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * GuideRpc 
+ * 引导语 
+------------------------------------------------------------------------------
+
+     * 创建或更新一条记录
+     * @param $data
+     * @return int 影响数据库行数(1/0)
+
+    * @method int createOrUpdate(array $data)
+
+------------------------------------------------------------------------------
+
+     * 获取预定义枚举列表
+     * @return array
+
+    * @method array getEnumList()
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isCacheKeyValid(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateCacheKey(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateCacheGroup(string $group)
+
+------------------------------------------------------------------------------
+
+    */
+    class GuideRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\GuideRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * DiseaseRpc 
+ * 疾病分类 
+------------------------------------------------------------------------------
+
+     * 创建一条记录
+     * @param $data
+     * @return array 插入后的完整数据
+
+    * @method array create(array $data)
+
+------------------------------------------------------------------------------
+
+     * 更新一条记录
+     * @param $data,商品全部信息,必须带有uuid
+     * @return int 影响数据库行数(1/0)
+
+    * @method int update(array $data)
+
+------------------------------------------------------------------------------
+
+     * 获取总记录数
+     * @param $filter,过滤条件
+     * @return int
+
+    * @method int getTotal(array $filter)
+
+------------------------------------------------------------------------------
+
+     * 获取列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+
+    * @method array getList(array $filter, $page, $limit, $sort)
+
+------------------------------------------------------------------------------
+
+     * 删除一条记录
+     * @param $uuid
+     * @return int
+
+    * @method int delete(string $uuid)
+
+------------------------------------------------------------------------------
+
+     * 通过uuid获取一条记录
+     * @param $uuid
+     * @return array|null
+
+    * @method array|null getByUuid(string $uuid)
+
+------------------------------------------------------------------------------
+
+    */
+    class DiseaseRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\DiseaseRpc';
     } 
 } 
