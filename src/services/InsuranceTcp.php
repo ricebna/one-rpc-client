@@ -886,7 +886,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method  deleteByParentUUid($parent_uuid)
+    * @method  deleteByParentUuid($parent_uuid)
 
 ------------------------------------------------------------------------------
 
