@@ -1,5 +1,5 @@
 <?php
-/**** 11 Classes, 77 Methods ****/
+/**** 11 Classes, 84 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -758,6 +758,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+
+    * @method  getByType($type)
+
+------------------------------------------------------------------------------
+
      * 获取预定义枚举列表
      * @return array
 
@@ -770,34 +775,6 @@ namespace OneRpcClient\Tcp\App\Rpc {
      * @return array|null
 
     * @method array|null getByUuid(string $uuid)
-
-------------------------------------------------------------------------------
-
-     * 判断缓存是否有效
-     * @param $group,缓存分组标识符
-     * @param $key
-     * @return bool
-     * @throws \Exception
-
-    * @method bool isCacheKeyValid(string $group, $key)
-
-------------------------------------------------------------------------------
-
-     * 更新缓存键为有效
-     * @param $group,缓存分组标识符
-     * @param $key
-     * @return bool
-
-    * @method bool updateCacheKey(string $group, $key)
-
-------------------------------------------------------------------------------
-
-     * 更新缓存分组
-     * @param $group
-     * @return bool
-     * @throws \Exception
-
-    * @method bool updateCacheGroup(string $group)
 
 ------------------------------------------------------------------------------
 
@@ -827,7 +804,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
      * 更新一条记录
-     * @param $data,商品全部信息,必须带有uuid
+     * @param $data, 必须带有uuid
      * @return int 影响数据库行数(1/0)
 
     * @method int update(array $data)
@@ -852,11 +829,64 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 获取父分类总记录数
+     * @param $filter,过滤条件
+     * @return int
+
+    * @method int getParentTotal(array $filter)
+
+------------------------------------------------------------------------------
+
+     * 获取父分类列表
+     * @param $filter,过滤条件
+     * @param int $page, //页码
+     * @param int $limit //每页数量
+     * @return array
+
+    * @method array getParentList(array $filter, $page, $limit, $sort)
+
+------------------------------------------------------------------------------
+
      * 删除一条记录
      * @param $uuid
      * @return int
 
     * @method int delete(string $uuid)
+
+------------------------------------------------------------------------------
+
+
+    * @method  updateAllIsHot(array $uuid_list)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getAllParentList()
+
+------------------------------------------------------------------------------
+
+
+    * @method  getHotList()
+
+------------------------------------------------------------------------------
+
+
+    * @method  getChildGroup()
+
+------------------------------------------------------------------------------
+
+
+    * @method  getResultList($disease_uuid)
+
+------------------------------------------------------------------------------
+
+
+    * @method  getResultEnumList()
+
+------------------------------------------------------------------------------
+
+
+    * @method  deleteByParentUUid($parent_uuid)
 
 ------------------------------------------------------------------------------
 

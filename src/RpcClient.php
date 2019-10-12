@@ -28,7 +28,7 @@ namespace OneRpcClient{
             $this->id    = self::$call_id ? self::$call_id : $this->uuid();
             $this->class = $this->remote_class_name ? $this->remote_class_name : get_called_class();
             //$this->args  = $args;
-            $this->args  = null;
+            $this->args  = [];
         }
 
         public function setServerHost($host, $port){
