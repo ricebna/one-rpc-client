@@ -26,6 +26,7 @@ namespace OneRpcClient{
         public function __construct()
         {
             $this->id    = self::$call_id ? self::$call_id : $this->uuid();
+            $this->ip    = get_ip();
             $this->class = $this->remote_class_name ? $this->remote_class_name : get_called_class();
             //$this->args  = $args;
             $this->args  = [];
@@ -100,19 +101,29 @@ namespace OneRpcClient{
             self::$last_called = ['class' => $this->class, 'name' => $name, 'args' =>  $arguments, 'time' => '----'];
             self::$called_list["$this->class:$name"] = self::$last_called;
             $begin = self::mstime();
-            $result = $this->callRpc([
+            $data = [
                 'i' => $this->id,
+                'ip' => $this->ip,
                 'c' => $this->class,
                 'f' => $name,
                 'a' => $arguments,
                 't' => $this->args,
                 's' => self::$is_static,
-                'o' => $this->getToken(json_encode([$this->class, $name, $arguments, $this->args])),
-            ]);
-            $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
-            self::$last_called['time'] = $time;
-            self::$called_list["$this->class:$name"] = self::$last_called;
-            return $result;
+                'o' => $this->getToken(json_encode([$this->id, $this->ip, $this->class, $name, $arguments, $this->args])),
+            ];
+            $ret = $this->callRpc(json_encode($data));//msgpack
+            $result    = json_decode($ret, true);//msgpack
+            if ($result === self::RPC_REMOTE_OBJ) {
+                $this->need_close = 1;
+                return $this;
+            } else if (is_array($result) && isset($result['err'], $result['msg'])) {
+                throw new \Exception($result['msg']."[{$result['id']}]", $result['err']);
+            } else {
+                $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
+                self::$last_called['time'] = $time;
+                self::$called_list["$this->class:$name"] = self::$last_called;
+                return $result;
+            }
         }
 
         protected function uuid()
@@ -165,23 +176,13 @@ namespace OneRpcClient{
         protected function callRpc($data)
         {
             self::$is_static = 0;
-
-            $buffer = json_encode($data);//msgpack
-            $buffer = pack('N', 4 + strlen($buffer)) . $buffer;
+            $buffer = pack('N', 4 + strlen($data)) . $data;
             $len    = fwrite(self::$_connection, $buffer);
 
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
             }
-            $data = json_decode($this->read(),true);//msgpack
-            if ($data === self::RPC_REMOTE_OBJ) {
-                $this->need_close = 1;
-                return $this;
-            } else if (is_array($data) && isset($data['err'], $data['msg'])) {
-                throw new \Exception($data['msg'], $data['err']);
-            } else {
-                return $data;
-            }
+            return $this->read();
         }
 
         protected function read()
@@ -226,19 +227,10 @@ namespace OneRpcClient{
                     'Content-type: application/rpc'
                 ],
                 'timeout' => 30,
-                'content' => json_encode($data) //msgpack
+                'content' => $data
             ]];
             $context = stream_context_create($opts);
-            $result  = file_get_contents($this->getServer('http'), false, $context);
-            $data    = json_decode($result, true);//msgpack
-            if ($data === self::RPC_REMOTE_OBJ) {
-                $this->need_close = 1;
-                return $this;
-            } else if (is_array($data) && isset($data['err'], $data['msg'])) {
-                throw new \Exception($data['msg'], $data['err']);
-            } else {
-                return $data;
-            }
+            return file_get_contents($this->getServer('http'), false, $context);
         }
 
     }
