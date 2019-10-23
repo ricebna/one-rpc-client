@@ -1,5 +1,9 @@
 <?php
 namespace OneRpcClient{
+    class RpcUserException extends \ErrorException
+    {
+
+    }
     class RpcClient
     {
         const RPC_REMOTE_OBJ = '#RpcRemoteObj#';
@@ -117,6 +121,9 @@ namespace OneRpcClient{
                 $this->need_close = 1;
                 return $this;
             } else if (is_array($result) && isset($result['err'], $result['msg'])) {
+                if($result['err'] > 600){
+                    throw new RpcUserException($result['msg'], $result['err']);
+                }
                 throw new \Exception($result['msg']."[{$result['id']}]", $result['err']);
             } else {
                 $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
