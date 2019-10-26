@@ -138,7 +138,7 @@ namespace OneRpcClient{
                 $this->need_close = 1;
                 return $this;
             } else if (is_array($result) && isset($result['err'], $result['msg'])) {
-                if($result['err'] > 600){
+                if($result['err'] > 599 && $result['err'] < 700){
                     throw new RpcUserException($result['msg'], $result['err']);
                 }
                 throw new \Exception($result['msg']."[{$result['id']}]", $result['err']);
