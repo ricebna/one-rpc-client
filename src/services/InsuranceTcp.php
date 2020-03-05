@@ -1,5 +1,5 @@
 <?php
-/**** 12 Classes, 96 Methods ****/
+/**** 12 Classes, 90 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -948,48 +948,19 @@ namespace OneRpcClient\Tcp\App\Rpc {
  * 微信API(解决跨项目间的Accesstoken一致性问题) 
 ------------------------------------------------------------------------------
 
-
-    * @method  setAppCode($app_code)
-
-------------------------------------------------------------------------------
-
-
-    * @method  getAccessToken()
-
-------------------------------------------------------------------------------
-
-     * 通过网页授权获得openid, 注意这里的access_token与getAccesstoken获得的access_token不是同一种东西
+     * 获取Accesstoken
+     * @param $app_code, jz_official
      * @return bool|mixed
 
-    * @method bool|mixed getPageOpenid($code)
+    * @method bool|mixed getAccessToken($app_code)
 
 ------------------------------------------------------------------------------
 
-     * h5 js调用api前需获取的授权码
-     * @return bool|mixed
+     * js调用api前需获取的授权码
+     * @param $app_code, jz_official
+     * @return bool|mixed|string
 
-    * @method bool|mixed getJsTicket()
-
-------------------------------------------------------------------------------
-
-     * 小程序登录授权
-
-    * @method  code2Session($login_code)
-
-------------------------------------------------------------------------------
-
-
-    * @method  getUnionid()
-
-------------------------------------------------------------------------------
-
-
-    * @method  getOpenid()
-
-------------------------------------------------------------------------------
-
-
-    * @method  getSessionKey()
+    * @method bool|mixed|string getJsTicket($app_code)
 
 ------------------------------------------------------------------------------
 
