@@ -1,5 +1,5 @@
 <?php
-/**** 11 Classes, 84 Methods ****/
+/**** 12 Classes, 90 Methods ****/
 /*********************************************************************************************************/
 
 namespace OneRpcClient\Tcp\App\Rpc {
@@ -866,12 +866,12 @@ namespace OneRpcClient\Tcp\App\Rpc {
 ------------------------------------------------------------------------------
 
 
-    * @method  getHotList()
+    * @method  getChildGroup()
 
 ------------------------------------------------------------------------------
 
 
-    * @method  getChildGroup()
+    * @method  getHotList()
 
 ------------------------------------------------------------------------------
 
@@ -890,6 +890,11 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+
+    * @method  removeDesc($uuid)
+
+------------------------------------------------------------------------------
+
      * 通过uuid获取一条记录
      * @param $uuid
      * @return array|null
@@ -898,10 +903,65 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 ------------------------------------------------------------------------------
 
+     * 判断缓存是否有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+     * @throws \Exception
+
+    * @method bool isCacheKeyValid(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存键为有效
+     * @param $group,缓存分组标识符
+     * @param $key
+     * @return bool
+
+    * @method bool updateCacheKey(string $group, $key)
+
+------------------------------------------------------------------------------
+
+     * 更新缓存分组
+     * @param $group
+     * @return bool
+     * @throws \Exception
+
+    * @method bool updateCacheGroup(string $group)
+
+------------------------------------------------------------------------------
+
     */
     class DiseaseRpc extends \OneRpcClient\RpcClientTcp { 
         protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'insurance';
         protected $remote_class_name = 'App\Rpc\DiseaseRpc';
+    } 
+} 
+
+/*********************************************************************************************************/
+
+namespace OneRpcClient\Tcp\App\Rpc {
+
+   /**
+ * WeixinRpc 
+ * 微信API(解决跨项目间的Accesstoken一致性问题) 
+------------------------------------------------------------------------------
+
+
+    * @method  setAppCode($app_code)
+
+------------------------------------------------------------------------------
+
+
+    * @method  __call($name, $arguments)
+
+------------------------------------------------------------------------------
+
+    */
+    class WeixinRpc extends \OneRpcClient\RpcClientTcp { 
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
+        protected $service_name = 'insurance';
+        protected $remote_class_name = 'App\Rpc\WeixinRpc';
     } 
 } 
