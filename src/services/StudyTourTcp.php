@@ -2,7 +2,7 @@
 /**** 4 Classes, 11 Methods ****/
 /*********************************************************************************************************/
 
-namespace OneRpcClient\Tcp\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
    /**
  * UserRpc 
@@ -35,7 +35,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 /*********************************************************************************************************/
 
-namespace OneRpcClient\Tcp\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
    /**
  * CacheStrategyRpc 
@@ -90,7 +90,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 /*********************************************************************************************************/
 
-namespace OneRpcClient\Tcp\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
    /**
  * WeixinRpc 
@@ -123,7 +123,7 @@ namespace OneRpcClient\Tcp\App\Rpc {
 
 /*********************************************************************************************************/
 
-namespace OneRpcClient\Tcp\App\Rpc {
+namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
    /**
  * ProjectRpc 
@@ -171,4 +171,4 @@ namespace OneRpcClient\Tcp\App\Rpc {
         protected $service_name = 'study_tour';
         protected $remote_class_name = 'App\Rpc\ProjectRpc';
     } 
-}
+} 
