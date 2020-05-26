@@ -141,7 +141,12 @@ namespace OneRpcClient{
                 if($result['err'] > 599 && $result['err'] < 700){
                     throw new RpcUserException($result['msg'], $result['err']);
                 }
-                throw new \Exception($result['msg']."[{$result['id']}]", $result['err']);
+                $class_str = get_class($this);
+                $arguments_str = [];
+                foreach ($arguments as $v){
+                    $arguments_str[] = str_replace(PHP_EOL, '', print_r($v, true));
+                }
+                throw new \Exception("Rpc Error($class_str::$name(". implode(', ', $arguments_str) .")): {$result['msg']}[{$result['id']}]", $result['err']);
             } else {
                 $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
                 self::$last_called['time'] = $time;
@@ -176,7 +181,7 @@ namespace OneRpcClient{
     class RpcClientTcp extends RpcClient
     {
 
-        private static $_connection = null;
+        private static $_connections = [];
 
         protected $time_out = 30;
 
@@ -185,15 +190,15 @@ namespace OneRpcClient{
         {
             //parent::__construct($args);
             parent::__construct();
-            if (!self::$_connection) {
-                self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 3);
-                if (!self::$_connection) {
-                    self::$_connection = stream_socket_client($this->getServer(), $code, $msg, 6);
-                    if (!self::$_connection) {
+            if (!isset(self::$_connections[$this->service_name])) {
+                self::$_connections[$this->service_name] = stream_socket_client($this->getServer(), $code, $msg, 3);
+                if (!self::$_connections[$this->service_name]) {
+                    self::$_connections[$this->service_name] = stream_socket_client($this->getServer(), $code, $msg, 6);
+                    if (!self::$_connections[$this->service_name]) {
                         throw new \Exception($msg, 6);
                     }
                 }
-                stream_set_timeout(self::$_connection, $this->time_out);
+                stream_set_timeout(self::$_connections[$this->service_name], $this->time_out);
             }
         }
 
@@ -201,7 +206,7 @@ namespace OneRpcClient{
         {
             self::$is_static = 0;
             $buffer = pack('N', 4 + strlen($data)) . $data;
-            $len    = fwrite(self::$_connection, $buffer);
+            $len    = fwrite(self::$_connections[$this->service_name], $buffer);
 
             if ($len !== strlen($buffer)) {
                 throw new \Exception('writeToRemote fail', 11);
@@ -216,7 +221,7 @@ namespace OneRpcClient{
             $head_read  = false;
             $time = time();
             while (1) {
-                $buffer = fread(self::$_connection, 8192);
+                $buffer = fread(self::$_connections[$this->service_name], 8192);
                 if ($buffer === '' || $buffer === false) {
                     throw new \Exception('read from remote fail', 2);
                 }
