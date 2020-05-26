@@ -1,8 +1,11 @@
 <?php
 namespace OneRpcClient{
-    class RpcUserException extends \ErrorException
-    {
-
+    class RpcUserException extends \ErrorException{}
+    class RpcException extends \ErrorException{
+        public function __construct($message = "", $code = 0, $severity = 1, $filename = __FILE__, $lineno = __LINE__, $previous = null)
+        {
+            parent::__construct('Rpc Error: '. $message, $code, $severity, $filename, $lineno, $previous);
+        }
     }
     class RpcClient
     {
@@ -71,7 +74,7 @@ namespace OneRpcClient{
 
         protected function getServer($type = 'tcp'){
             if(!$this->service_name){
-                throw new \Exception('The property $service_name is not set');
+                throw new RpcException('The property $service_name is not set');
             }
             $result = null;
             if(function_exists('cache')){
@@ -93,14 +96,14 @@ namespace OneRpcClient{
                         $result = json_decode($result, true);
                     }catch (\Exception $e){
                         if(!$i){
-                            throw new \Exception("The service $this->service_name is unavailable,". $e->getMessage());
+                            throw new RpcException("The service $this->service_name is unavailable,". $e->getMessage());
                         }
                     }
                     if($result){
                         break;
                     }
                     if(!$i){
-                        throw new \Exception("The service $this->service_name is unavailable");
+                        throw new RpcException("The service $this->service_name is unavailable");
                     }
                 }
                 if(function_exists('cache')){
@@ -146,7 +149,7 @@ namespace OneRpcClient{
                 foreach ($arguments as $v){
                     $arguments_str[] = str_replace(PHP_EOL, '', print_r($v, true));
                 }
-                throw new \Exception("Rpc Error($class_str::$name(". implode(', ', $arguments_str) .")): {$result['msg']}[{$result['id']}]", $result['err']);
+                throw new  RpcException("[$class_str::$name(". implode(', ', $arguments_str) .")]: {$result['msg']}[{$result['id']}]", $result['err']);
             } else {
                 $time = sprintf('%01.2f',round(self::mstime() - $begin, 2));
                 self::$last_called['time'] = $time;
@@ -195,7 +198,7 @@ namespace OneRpcClient{
                 if (!self::$_connections[$this->service_name]) {
                     self::$_connections[$this->service_name] = stream_socket_client($this->getServer(), $code, $msg, 6);
                     if (!self::$_connections[$this->service_name]) {
-                        throw new \Exception($msg, 6);
+                        throw new RpcException($msg, 6);
                     }
                 }
                 stream_set_timeout(self::$_connections[$this->service_name], $this->time_out);
@@ -209,7 +212,7 @@ namespace OneRpcClient{
             $len    = fwrite(self::$_connections[$this->service_name], $buffer);
 
             if ($len !== strlen($buffer)) {
-                throw new \Exception('writeToRemote fail', 11);
+                throw new RpcException('writeToRemote fail', 11);
             }
             return $this->read();
         }
@@ -223,7 +226,7 @@ namespace OneRpcClient{
             while (1) {
                 $buffer = fread(self::$_connections[$this->service_name], 8192);
                 if ($buffer === '' || $buffer === false) {
-                    throw new \Exception('read from remote fail', 2);
+                    throw new RpcException('read from remote fail', 2);
                 }
                 $all_buffer .= $buffer;
                 $recv_len   = strlen($all_buffer);

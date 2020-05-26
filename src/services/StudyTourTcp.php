@@ -27,7 +27,7 @@ namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
     */
     class UserRpc extends \OneRpcClient\RpcClientTcp { 
-        protected $secret = '3dg50a63bcc57a9bm7fe442e3e6fk62a';
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'study_tour';
         protected $remote_class_name = 'App\Rpc\UserRpc';
     } 
@@ -82,7 +82,7 @@ namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
     */
     class CacheStrategyRpc extends \OneRpcClient\RpcClientTcp { 
-        protected $secret = '3dg50a63bcc57a9bm7fe442e3e6fk62a';
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'study_tour';
         protected $remote_class_name = 'App\Rpc\CacheStrategyRpc';
     } 
@@ -115,7 +115,7 @@ namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
     */
     class WeixinRpc extends \OneRpcClient\RpcClientTcp { 
-        protected $secret = '3dg50a63bcc57a9bm7fe442e3e6fk62a';
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'study_tour';
         protected $remote_class_name = 'App\Rpc\WeixinRpc';
     } 
@@ -167,7 +167,7 @@ namespace OneRpcClient\Tcp\App\Rpc\StudyTour {
 
     */
     class ProjectRpc extends \OneRpcClient\RpcClientTcp { 
-        protected $secret = '3dg50a63bcc57a9bm7fe442e3e6fk62a';
+        protected $secret = 'bcc7fece0b442b2a2fa53d17a637a3e6';
         protected $service_name = 'study_tour';
         protected $remote_class_name = 'App\Rpc\ProjectRpc';
     } 
